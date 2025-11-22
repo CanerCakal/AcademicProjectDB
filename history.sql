@@ -281,3 +281,61 @@ INSERT INTO "ProjectReviews" ("ProjectID", "ReviewerID", "Score", "Comment") VAL
 (20, 2, 88, 'Chatbot cevap tutarlılığı güçlü.'),
 (21, 4, 70, '3D model sonuçları yetersiz.'),
 (22, 5, 94, 'Sera kontrolü  mükemmel çalışıyor.');
+/* 2025-11-22 14:00:13 [83 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 7 WHERE "ProjectID" = 1;
+/* 2025-11-22 14:03:47 [23 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 25 WHERE "ProjectID" = 2;
+/* 2025-11-22 14:04:04 [22 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 19 WHERE "ProjectID" = 3;
+/* 2025-11-22 14:04:32 [37 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 13 WHERE "ProjectID" = 4;
+/* 2025-11-22 14:05:42 [31 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 29 WHERE "ProjectID" = 17;
+/* 2025-11-22 14:06:42 [14 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 9 WHERE "ProjectID" = 19;
+/* 2025-11-22 14:07:38 [15 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 17 WHERE "ProjectID" = 20;
+/* 2025-11-22 14:09:59 [25 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 1008 WHERE "ProjectID" = 20;
+/* 2025-11-22 14:11:51 [19 ms] */ 
+UPDATE "Projects" SET "CreatedBy" = 1014 WHERE "ProjectID" = 19;
+/* 2025-11-22 14:23:13 [54 ms] */ 
+UPDATE "Projects" SET "CourseID" = 10 WHERE "ProjectID" = 22;
+/* 2025-11-22 14:30:57 [35 ms] */ 
+UPDATE "ProjectReviews" SET "ReviewerID" = 1003 WHERE "ReviewID" = 6;
+/* 2025-11-22 14:35:25 [20 ms] */ 
+UPDATE "ProjectReviews" SET "ReviewerID" = 1002 WHERE "ReviewID" = 16;
+/* 2025-11-22 14:38:07 [22 ms] */ 
+UPDATE "ProjectReviews" SET "ReviewerID" = 1004 WHERE "ReviewID" = 17;
+/* 2025-11-22 14:38:25 [15 ms] */ 
+UPDATE "ProjectReviews" SET "ReviewerID" = 1005 WHERE "ReviewID" = 18;
+/* 2025-11-22 14:44:27 [37 ms] */ 
+UPDATE "ProjectMembers" SET "UserID" = 7 WHERE "MemberID" = 2;
+/* 2025-11-22 14:46:14 [16 ms] */ 
+UPDATE "ProjectMembers" SET "UserID" = 14 WHERE "MemberID" = 3;
+/* 2025-11-22 14:46:44 [15 ms] */ 
+UPDATE "ProjectMembers" SET "UserID" = 17 WHERE "MemberID" = 4;
+/* 2025-11-22 14:47:12 [19 ms] */ 
+UPDATE "ProjectMembers" SET "UserID" = 18 WHERE "MemberID" = 5;
+/* 2025-11-22 14:47:35 [12 ms] */ 
+UPDATE "ProjectMembers" SET "UserID" = 19 WHERE "MemberID" = 6;
+/* 2025-11-22 14:48:02 [17 ms] */ 
+UPDATE "ProjectMembers" SET "UserID" = 20 WHERE "MemberID" = 7;
+/* 2025-11-22 14:48:41 [16 ms] */ 
+UPDATE "ProjectMembers" SET "UserID" = 21 WHERE "MemberID" = 13;
+/* 2025-11-22 14:49:13 [20 ms] */ 
+UPDATE "ProjectMembers" SET "UserID" = 23 WHERE "MemberID" = 14;
+/* 2025-11-22 14:51:47 [38 ms] */ 
+UPDATE "ProjectDeliverables" SET "UploadedBy" = 7 WHERE "DeliverableID" = 1;
+/* 2025-11-22 14:55:10 [21 ms] */ 
+UPDATE "ProjectDeliverables" SET "UploadedBy" = 25 WHERE "DeliverableID" = 2;
+/* 2025-11-22 14:55:41 [15 ms] */ 
+UPDATE "ProjectDeliverables" SET "UploadedBy" = 19 WHERE "DeliverableID" = 3;
+/* 2025-11-22 14:56:06 [17 ms] */ 
+UPDATE "ProjectDeliverables" SET "UploadedBy" = 13 WHERE "DeliverableID" = 4;
+/* 2025-11-22 14:58:36 [17 ms] */ 
+UPDATE "ProjectDeliverables" SET "UploadedBy" = 29 WHERE "DeliverableID" = 7;
+/* 2025-11-22 14:59:12 [17 ms] */ 
+UPDATE "ProjectDeliverables" SET "UploadedBy" = 1014 WHERE "DeliverableID" = 9;
+/* 2025-11-22 14:59:55 [19 ms] */ 
+UPDATE "ProjectDeliverables" SET "UploadedBy" = 1008 WHERE "DeliverableID" = 10;
