@@ -339,3 +339,107 @@ UPDATE "ProjectDeliverables" SET "UploadedBy" = 29 WHERE "DeliverableID" = 7;
 UPDATE "ProjectDeliverables" SET "UploadedBy" = 1014 WHERE "DeliverableID" = 9;
 /* 2025-11-22 14:59:55 [19 ms] */ 
 UPDATE "ProjectDeliverables" SET "UploadedBy" = 1008 WHERE "DeliverableID" = 10;
+/* 2025-11-23 15:17:32 [64 ms] */ 
+CREATE TRIGGER trg_OnlyStudentCanInsertProject
+ON Projects
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Inserted i
+        JOIN Users u
+            ON i.CreatedBy = u.UserID
+        WHERE u.RoleID <> 3    -- 3 = Öğrenci
+    )
+    BEGIN
+        RAISERROR ('Sadece öğrenciler proje ekleyebilir!', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END;
+/* 2025-11-23 15:21:16 [34 ms] */ 
+CREATE TRIGGER trg_OnlyTeacherCanInsertComment
+ON ProjectReviews
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Inserted i
+        JOIN Users u
+            ON i.ReviewerID = u.UserID
+        WHERE u.RoleID <> 2    -- 2 = Öğretmen
+    )
+    BEGIN
+        RAISERROR ('Sadece öğretmenler yorum yapabilir!', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+END;
+/* 2025-11-23 15:30:49 [80 ms] */ 
+INSERT INTO "Projects" ("Title", "Summary", "CreatedBy", "CourseID") VALUES
+('Test Projesi - Öğrenci ekledi', 'Bu proje, sadece öğrenci rolündeki kullanıcıların proje ekleyebilme yetkisini test etmek amacıyla oluşturulmuştur.', 7, 1);
+/* 2025-11-23 15:39:47 [68 ms] */ 
+INSERT INTO "ProjectReviews" ("ProjectID", "ReviewerID", "Score", "Comment") VALUES
+(1, 1, 90, 'Bu yorum, sadece öğretmen rolündeki kullanıcıların yorum yapabilme yetkisini test etmek amacıyla oluşturulmuştur.');
+/* 2025-11-23 15:44:16 [22 ms] */ 
+-- Bu ekleme, tetikleyici nedeniyle başarısız olmalıdır.;
+/* 2025-11-23 15:47:52 [64 ms] */ 
+SELECT TOP 100  TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE';
+/* 2025-11-23 15:49:21 [73 ms] */ 
+SELECT TOP 100  COLUMN_NAME, DATA_TYPE, IS_NULLABLE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Users';
+/* 2025-11-23 15:50:05 [139 ms] */ 
+SELECT TOP 100   
+    fk.name AS ForeignKeyName,
+    tp.name AS ParentTable,
+    cp.name AS ParentColumn,
+    tr.name AS ReferencedTable,
+    cr.name AS ReferencedColumn
+FROM sys.foreign_keys fk
+INNER JOIN sys.foreign_key_columns fkc 
+    ON fk.object_id = fkc.constraint_object_id
+INNER JOIN sys.tables tp 
+    ON fkc.parent_object_id = tp.object_id
+INNER JOIN sys.columns cp 
+    ON fkc.parent_object_id = cp.object_id 
+    AND fkc.parent_column_id = cp.column_id
+INNER JOIN sys.tables tr 
+    ON fkc.referenced_object_id = tr.object_id
+INNER JOIN sys.columns cr 
+    ON fkc.referenced_object_id = cr.object_id 
+    AND fkc.referenced_column_id = cr.column_id
+ORDER BY ParentTable;
+/* 2025-11-23 15:50:44 [241 ms] */ 
+EXEC sp_fkeys 'Projects';
+/* 2025-11-23 15:51:33 [515 ms] */ 
+SELECT TOP 100 
+    FK_Table = FK.TABLE_NAME,
+    FK_Column = CU.COLUMN_NAME,
+    PK_Table = PK.TABLE_NAME,
+    PK_Column = PT.COLUMN_NAME,
+    Constraint_Name = C.CONSTRAINT_NAME
+FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
+INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK
+    ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
+INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK
+    ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
+INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU
+    ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
+INNER JOIN (
+    SELECT i1.TABLE_NAME, i2.COLUMN_NAME
+    FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2
+        ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
+    WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
+) PT
+    ON PT.TABLE_NAME = PK.TABLE_NAME
+ORDER BY PK_Table, FK_Table;
