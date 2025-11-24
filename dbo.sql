@@ -359,4 +359,138 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'Users';
 --Users tablosunun şemasını görüntüleme
 
+SELECT 
+    u.FullName AS StudentName,
+    p.ProjectID,
+    p.Title,
+    p.Status,
+    c.CourseName
+FROM ProjectMembers pm
+JOIN Users u ON pm.UserID = u.UserID
+JOIN Projects p ON pm.ProjectID = p.ProjectID
+JOIN Courses c ON p.CourseID = c.CourseID
+WHERE u.RoleID = 3;   
+--Bir öğrencinin projelerini listeleme
 
+SELECT 
+    u.FullName AS TeacherName,
+    COUNT(ps.SupervisorID) AS SupervisedProjectCount
+FROM Users u
+LEFT JOIN ProjectSupervisors ps 
+    ON u.UserID = ps.UserID
+WHERE u.RoleID = 2
+GROUP BY u.FullName
+ORDER BY SupervisedProjectCount DESC;
+--Her öğretmenin denetlediği proje sayısını listeleme
+
+SELECT 
+    p.ProjectID,
+    p.Title,
+    AVG(r.Score) AS AverageScore
+FROM Projects p
+LEFT JOIN ProjectReviews r
+    ON p.ProjectID = r.ProjectID
+GROUP BY p.ProjectID, p.Title
+ORDER BY AverageScore DESC;
+--Projelerin ortalama değerlendirme puanlarını listeleme
+
+SELECT 
+    d.DepartmentName,
+    COUNT(p.ProjectID) AS ProjectCount
+FROM Departments d
+LEFT JOIN Courses c ON d.DepartmentID = c.DepartmentID
+LEFT JOIN Projects p ON c.CourseID = p.CourseID
+GROUP BY d.DepartmentName;
+--Her bölümdeki proje sayısını listeleme
+
+SELECT
+    u.FullName,
+    p.Title AS ProjectTitle,
+    d.FileName,
+    d.FilePath,
+    d.Version,
+    d.UploadedAt
+FROM Users u
+JOIN ProjectDeliverables d ON u.UserID = d.UploadedBy
+JOIN Projects p ON d.ProjectID = p.ProjectID
+WHERE u.RoleID = 3
+ORDER BY u.FullName, d.UploadedAt DESC;
+--Öğrencilerin yüklediği proje teslim dosyalarını listeleme
+
+SELECT 
+    p.Title,
+    COUNT(pm.MemberID) AS MemberCount,
+    CASE 
+        WHEN EXISTS (
+            SELECT 1 FROM ProjectSupervisors ps 
+            WHERE ps.ProjectID = p.ProjectID
+        ) THEN 'YES'
+        ELSE 'NO'
+    END AS HasSupervisor
+FROM Projects p
+LEFT JOIN ProjectMembers pm 
+    ON p.ProjectID = pm.ProjectID
+GROUP BY p.ProjectID, p.Title;
+--Projelerin üye sayısını ve bir denetleyici atanıp atanmadığını listeleme
+
+CREATE Table ProjectStatusHistory (
+    StatusHistoryID INT IDENTITY(1,1) PRIMARY KEY,
+    ProjectID INT NOT NULL,
+    OldStatus NVARCHAR(50),
+    NewStatus NVARCHAR(50) NOT NULL,
+    ChangedBy INT NOT NULL,
+    ChangedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID),
+    FOREIGN KEY (ChangedBy) REFERENCES Users(UserID)
+    );
+
+CREATE TRIGGER trg_ProjectStatusHistory
+ON Projects
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Sadece Status alanı değiştiyse çalışsın
+    IF NOT UPDATE(Status)
+        RETURN;
+
+    INSERT INTO ProjectStatusHistory (ProjectID, OldStatus, NewStatus, ChangedBy)
+    SELECT
+        i.ProjectID,
+        d.Status AS OldStatus,
+        i.Status AS NewStatus,
+        i.CreatedBy    -- Default: statüyü değiştiren öğrenci/öğretmen dıştan gönderilir
+    FROM Inserted i
+    JOIN Deleted d ON i.ProjectID = d.ProjectID
+    WHERE ISNULL(d.Status, '') <> ISNULL(i.Status, '');
+END;
+GO
+
+UPDATE Projects
+SET Status = 'Submitted'
+WHERE ProjectID = 1;
+
+UPDATE Projects
+SET Status = 'UnderReview'
+WHERE ProjectID = 1;
+
+UPDATE Projects
+SET Status = 'Approved'
+WHERE ProjectID = 1;
+
+UPDATE Projects
+SET Status = 'Rejected'
+WHERE ProjectID = 1;
+
+UPDATE Projects
+SET Status = 'RevisionRequested'
+WHERE ProjectID = 1;
+
+UPDATE Projects
+SET Status = 'Submitted'
+WHERE ProjectID = 19;
+
+UPDATE Projects
+SET Status = 'UnderReview'
+WHERE ProjectID = 19;
