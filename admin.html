@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Üniversite Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { display: flex; height: 100vh; background: #f4f4f9; color: #333; overflow: hidden; }
+
+        /* SOL MENÜ (SIDEBAR) */
+        .sidebar {
+            width: 250px; background: #2d3436; color: white; display: flex; flex-direction: column; padding: 20px;
+        }
+        .sidebar h2 { margin-bottom: 30px; font-size: 1.4rem; text-align: center; border-bottom: 1px solid #555; padding-bottom: 15px; }
+        
+        .menu-item {
+            padding: 15px; cursor: pointer; border-radius: 8px; margin-bottom: 10px; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .menu-item:hover, .active { background: #0984e3; }
+
+        .logout-btn { margin-top: auto; background: #d63031; text-align: center; justify-content: center; }
+
+        /* SAĞ İÇERİK (CONTENT) */
+        .content { flex: 1; padding: 30px; overflow-y: auto; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 1.8rem; color: #2d3436; }
+
+        /* TABLOLAR İÇİN STİL */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #0984e3; color: white; }
+        tr:hover { background: #f1f2f6; }
+
+        /* Action Butonları */
+        .btn-edit { background: #f1c40f; color: #333; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px; }
+        .btn-delete { background: #d63031; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        
+        /* --- EDIT MODAL STİLLERİ --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+.modal-box {
+    background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative;
+}
+.modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #555; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #333; }
+.form-group input, .form-group select {
+    width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;
+}
+.btn-save { width: 100%; background: #27ae60; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+.btn-save:hover { background: #219150; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Admin Paneli</h2>
+        <div class="menu-item active" onclick="showSection('users')">👤 Kullanıcılar</div>
+        <div class="menu-item" onclick="showSection('projects')">🚀 Projeler</div>
+        <div class="menu-item" onclick="showSection('departments')">🏛️ Bölümler</div>
+        <div class="menu-item" onclick="showSection('courses')">📚 Dersler</div>
+        <div class="menu-item logout-btn" onclick="logout()">🚪 Çıkış Yap</div>
+    </div>
+
+    <div class="content">
+        <div class="header">
+            <h1 id="pageTitle">Kullanıcı Yönetimi</h1>
+            <div id="adminName" style="font-weight: bold; color: #0984e3;">Admin</div>
+        </div>
+
+        <div id="tableContainer">
+            <p>Yükleniyor...</p>
+        </div>
+    </div>
+    
+    <div id="adminModal" class="modal-overlay">
+    <div class="modal-box">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle" style="margin-bottom:20px;">Kaydı Düzenle</h2>
+        
+        <div id="modalFormContent">
+            </div>
+
+        <button class="btn-save" onclick="saveChanges()">💾 Değişiklikleri Kaydet</button>
+    </div>
+</div>
+
+    <script>
+        const API_URL = "http://localhost:3000";
+
+// Global Değişkenler
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+let currentData = [];    // Tablodaki verileri burada tutacağız
+let currentType = "";    // Şu an neyi görüntülüyoruz? (users, departments vb.)
+let editingId = null;    // Şu an hangi ID'yi düzenliyoruz?
+
+// 1. Yetki Kontrolü
+if (!currentUser || currentUser.RoleID !== 1) {
+    alert("Bu sayfaya erişim yetkiniz yok!");
+    window.location.href = "index.html";
+} else {
+    document.getElementById("adminName").innerText = currentUser.FullName;
+    loadData('users'); // Varsayılan açılış
+}
+
+/* --- VERİ YÖNETİMİ --- */
+function showSection(section) {
+    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    loadData(section);
+}
+
+async function loadData(type) {
+    currentType = type; // Hangi bölümde olduğumuzu kaydet
+    const container = document.getElementById("tableContainer");
+    const title = document.getElementById("pageTitle");
+    container.innerHTML = "<p>Veriler yükleniyor...</p>";
+
+    let endpoint = "";
+    let columns = [];
+    let headers = [];
+
+    // Bölüme göre ayarlar
+    if (type === 'users') {
+        title.innerText = "Kullanıcı Yönetimi";
+        endpoint = "/users";
+        columns = ["UserID", "FullName", "Email", "RoleID"];
+        headers = ["ID", "İsim Soyisim", "E-posta", "Rol"];
+    } else if (type === 'departments') {
+        title.innerText = "Bölüm Yönetimi";
+        endpoint = "/departments";
+        columns = ["DepartmentID", "DepartmentName"];
+        headers = ["ID", "Bölüm Adı"];
+    } else if (type === 'courses') {
+        title.innerText = "Ders Yönetimi";
+        endpoint = "/courses";
+        columns = ["CourseID", "CourseCode", "CourseName", "Term"];
+        headers = ["ID", "Kod", "Ders Adı", "Dönem"];
+    } else if (type === 'projects') {
+        title.innerText = "Proje Yönetimi";
+        endpoint = "/projects";
+        columns = ["ProjectID", "Title", "Status", "StudentName"];
+        headers = ["ID", "Başlık", "Durum", "Öğrenci"];
+    }
+
+    try {
+        const res = await fetch(API_URL + endpoint);
+        currentData = await res.json(); // 🔥 Veriyi hafızaya al
+
+        if (currentData.length === 0) {
+            container.innerHTML = "<p>Kayıt bulunamadı.</p>"; return;
+        }
+
+        // Tabloyu Çiz
+        let html = `<table><thead><tr>`;
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += `<th>İşlemler</th></tr></thead><tbody>`;
+
+        currentData.forEach(item => {
+            html += `<tr>`;
+            columns.forEach(col => {
+                // RoleID görselleştirme
+                let val = item[col];
+                if(col === 'RoleID') {
+                    if(val === 1) val = '<span style="color:red;font-weight:bold">Admin</span>';
+                    if(val === 2) val = '<span style="color:blue">Öğretmen</span>';
+                    if(val === 3) val = '<span style="color:green">Öğrenci</span>';
+                }
+                html += `<td>${val || '-'}</td>`;
+            });
+
+            // İlk sütun her zaman ID'dir varsayımıyla:
+            const idValue = item[columns[0]]; 
+
+            html += `
+                <td>
+                    <button class="btn-edit" onclick="openEditModal(${idValue})">Düzenle</button>
+                    <button class="btn-delete" onclick="deleteItem(${idValue})">Sil</button>
+                </td>
+            </tr>`;
+        });
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+
+    } catch (err) {
+        container.innerHTML = "Hata: " + err.message;
+    }
+}
+// 1. EKLEME MODALINI AÇ (Form Boş Gelir)
+function openAddModal() {
+    editingId = null; // ID'yi sıfırla ki sistem yeni kayıt olduğunu anlasın
+    const formDiv = document.getElementById("modalFormContent");
+    document.getElementById("modalTitle").innerText = "Yeni Kayıt Ekle";
+
+    let formHTML = "";
+
+    if (currentType === 'users') {
+        formHTML = `
+            <div class="form-group"><label>İsim Soyisim</label><input type="text" id="inpName" placeholder="Ad Soyad"></div>
+            <div class="form-group"><label>E-posta</label><input type="text" id="inpEmail" placeholder="ornek@uni.edu"></div>
+            <div class="form-group"><label>Şifre</label><input type="text" id="inpPass" value="1234"></div>
+            <div class="form-group"><label>Rol</label>
+                <select id="inpRole">
+                    <option value="2">Öğretmen</option>
+                    <option value="3">Öğrenci</option>
+                    <option value="1">Admin</option>
+                </select>
+            </div>
+        `;
+    } else if (currentType === 'departments') {
+        formHTML = `
+            <div class="form-group"><label>Bölüm Adı</label><input type="text" id="inpDeptName" placeholder="Bilgisayar Müh."></div>
+        `;
+    } else if (currentType === 'courses') {
+        formHTML = `
+            <div class="form-group"><label>Ders Kodu</label><input type="text" id="inpCode" placeholder="CSE101"></div>
+            <div class="form-group"><label>Ders Adı</label><input type="text" id="inpCourseName" placeholder="Algoritma"></div>
+            <div class="form-group"><label>Dönem</label><input type="text" id="inpTerm" placeholder="2025 Güz"></div>
+        `;
+    } else if (currentType === 'projects') {
+        formHTML = `
+            <div class="form-group"><label>Proje Başlığı</label><input type="text" id="inpTitle"></div>
+            <div class="form-group"><label>Özet</label><input type="text" id="inpSummary"></div>
+            <p style="font-size:0.8rem; color:red;">Not: Admin panelinden eklenen projeler varsayılan ID'lere atanır.</p>
+        `;
+    }
+
+    formDiv.innerHTML = formHTML;
+    document.getElementById("adminModal").style.display = "flex";
+}
+/* --- DÜZENLEME (MODAL) MANTIĞI --- */
+function openEditModal(id) {
+    editingId = id;
+    document.getElementById("modalTitle").innerText = "Kaydı Düzenle";
+    const item = currentData.find(x => Object.values(x)[0] === id); // Hafızadan bul
+    const formDiv = document.getElementById("modalFormContent");
+    
+    // Formu Temizle ve Türüne Göre Doldur
+    let formHTML = "";
+
+    if (currentType === 'users') {
+        formHTML = `
+            <div class="form-group"><label>İsim Soyisim</label><input type="text" id="inpName" value="${item.FullName}"></div>
+            <div class="form-group"><label>E-posta</label><input type="text" id="inpEmail" value="${item.Email}"></div>
+            <div class="form-group"><label>Rol (1:Admin, 2:Hoca, 3:Öğr)</label>
+                <select id="inpRole">
+                    <option value="1" ${item.RoleID===1?'selected':''}>Admin</option>
+                    <option value="2" ${item.RoleID===2?'selected':''}>Öğretmen</option>
+                    <option value="3" ${item.RoleID===3?'selected':''}>Öğrenci</option>
+                </select>
+            </div>
+        `;
+    } else if (currentType === 'departments') {
+        formHTML = `
+            <div class="form-group"><label>Bölüm Adı</label><input type="text" id="inpDeptName" value="${item.DepartmentName}"></div>
+        `;
+    } else if (currentType === 'courses') {
+        formHTML = `
+            <div class="form-group"><label>Ders Kodu</label><input type="text" id="inpCode" value="${item.CourseCode}"></div>
+            <div class="form-group"><label>Ders Adı</label><input type="text" id="inpCourseName" value="${item.CourseName}"></div>
+            <div class="form-group"><label>Dönem</label><input type="text" id="inpTerm" value="${item.Term}"></div>
+        `;
+    } else {
+        alert("Bu bölüm için düzenleme arayüzü henüz hazır değil.");
+        return;
+    }
+
+    formDiv.innerHTML = formHTML;
+    document.getElementById("adminModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("adminModal").style.display = "none";
+}
+
+async function saveChanges() {
+    let bodyData = {};
+    let endpoint = "";
+    let method = "POST"; // Varsayılan: EKLEME
+
+    // Hangi verileri alacağımızı belirle
+    if (currentType === 'users') {
+        bodyData = {
+            FullName: document.getElementById("inpName").value,
+            Email: document.getElementById("inpEmail").value,
+            RoleID: parseInt(document.getElementById("inpRole").value)
+        };
+        // Eğer Ekleme modundaysak Şifreyi de al
+        if(editingId === null) {
+            bodyData.Password = document.getElementById("inpPass").value;
+        }
+    } else if (currentType === 'departments') {
+        bodyData = { DepartmentName: document.getElementById("inpDeptName").value };
+    } else if (currentType === 'courses') {
+        bodyData = {
+            CourseCode: document.getElementById("inpCode").value,
+            CourseName: document.getElementById("inpCourseName").value,
+            Term: document.getElementById("inpTerm").value
+        };
+    } else if (currentType === 'projects') {
+        bodyData = {
+            Title: document.getElementById("inpTitle").value,
+            Summary: document.getElementById("inpSummary").value
+        };
+    }
+
+    // KARAR ANI: Ekleme mi Güncelleme mi?
+    if (editingId !== null) {
+        // ID varsa bu bir GÜNCELLEMEDİR
+        method = "PUT";
+        endpoint = `/${currentType}/${editingId}`;
+    } else {
+        // ID yoksa bu bir EKLEMEDİR
+        method = "POST";
+        endpoint = `/${currentType}`;
+    }
+
+    if(!confirm("İşlemi onaylıyor musunuz?")) return;
+
+    try {
+        const res = await fetch(API_URL + endpoint, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyData)
+        });
+        const result = await res.json();
+        
+        if (result.success) {
+            alert(editingId ? "✅ Güncellendi" : "✅ Yeni Kayıt Eklendi");
+            closeModal();
+            loadData(currentType); // Tabloyu yenile
+        } else {
+            alert("Hata: " + result.message);
+        }
+    } catch (err) {
+        alert("Sunucu hatası: " + err);
+    }
+}
+
+/* --- SİLME MANTIĞI --- */
+async function deleteItem(id) {
+    if(!confirm("Bu kaydı kalıcı olarak silmek istediğinize emin misiniz?")) return;
+
+    let endpoint = "";
+    if (currentType === 'projects') endpoint = `/projects/${id}`;
+    // Diğerleri için DELETE endpointlerini server.js'e eklemen gerekir.
+    // Şimdilik sadece projeler çalışır.
+    
+    if (!endpoint) { alert("Bu veri türü için silme işlemi henüz aktif değil."); return; }
+
+    try {
+        const res = await fetch(API_URL + endpoint, { method: 'DELETE' });
+        const result = await res.json();
+        if(result.success) {
+            alert("Silindi.");
+            loadData(currentType);
+        } else {
+            alert("Hata: " + result.message);
+        }
+    } catch(e) { alert("Hata"); }
+}
+
+function logout() {
+    localStorage.removeItem("currentUser");
+    window.location.href = "index.html";
+}
+
+    </script>
+</body>
+</html>
