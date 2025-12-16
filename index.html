@@ -3,34 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-
+    <title>Proje Yönetim Paneli</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* 🔥 Üstteki beyaz boşluğu kesin kaldırır */
-            overflow-y: auto;     /* Dikey scroll aktif */
+            width: 100%; min-height: 100vh;
+            overflow-x: hidden;
             background: rgba(173, 107, 107, 0.462);
         }
 
-        /* 🔥 Animasyonlu Arka Plan (gradient) */
+        /* Arkaplan Animasyonu */
         .animated-bg {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            background: linear-gradient(120deg, #6a11cb, #2575fc, #ff4e50, #f9d423);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(120deg, #1e3c72, #2a5298, #ff4e50, #f9d423);
             background-size: 400% 400%;
-            animation: gradientShift 12s ease infinite;
+            animation: gradientShift 15s ease infinite;
             z-index: -2;
         }
 
@@ -40,259 +31,811 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* ✨ Partikül Arka Plan (ek efekt) */
-        .particles {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            z-index: -1;
-        }
-
+        /* Partiküller */
+        .particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
         .particle {
-            position: absolute;
-            bottom: -20px;
-            width: 6px;
-            height: 6px;
+            position: absolute; width: 6px; height: 6px;
             background: rgba(255, 255, 255, 0.6);
             border-radius: 50%;
             animation: floatUp linear infinite;
-            filter: blur(1px);
         }
-
         @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-120vh) scale(0.3); opacity: 0; }
+            0% { transform: translateY(100vh) scale(1); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(0.3); opacity: 0; }
         }
 
-        /* 🔹 Ortadaki Kart */
-        .container {
-            width: 90%;
-            max-width: 480px;
-            padding: 35px;
-            margin: auto;
-            margin-top: 12vh;
-            background: rgba(255, 255, 255, 0.13);
-            border-radius: 18px;
+        /* 🔹 KONTROL PANELİ (Butonlar) */
+        .control-panel {
+            width: 90%; 
+            max-width: 2000px; /* Genişlettik ki butonlar sığsın */
+            padding: 30px; 
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(14px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-            text-align: center;
-            color: rgb(255, 255, 255);
-            animation: fadeIn 1.4s ease;
-            position: relative;
-            z-index: 5;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 18px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center; color: white;
+            animation: fadeIn 1s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1 { font-size: 2.4rem; margin-bottom: 10px; font-weight: 600; }
-        p { opacity: 0.85; }
+        .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
         button {
-            margin-top: 20px;
-            padding: 14px 25px;
-            background: rgb(255, 255, 255);
-            color: #333;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
+            padding: 10px 18px; font-size: 0.9rem; font-weight: 600;
+            border: none; border-radius: 10px; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 6px;
+        }
+        button:hover { transform: translateY(-3px); filter: brightness(1.1); }
+
+        .btn-users { background: #fff; color: #2575fc; }
+        .btn-projects { background: #ff4e50; color: white; }
+        .btn-depts { background: #f9d423; color: #333; }
+        .btn-reviews { background: #6a11cb; color: white; }
+        .btn-courses { background: #00b894; color: white; }
+        .btn-files { background: #e17055; color: white; }
+        .btn-supervisors { background: #0984e3; color: white; }
+
+        /* 🔥 VERİ IZGARASI */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 95%; max-width: 1400px;
+            margin: 0 auto 60px auto; padding: 10px;
         }
 
-        button:hover { background: #e3e3e3; }
-
-        #userList, #projectList {
-            margin-top: 25px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: left;
-            display: none;
+        /* Tablet ve Mobilde bozulmaması için Medya Sorgusu (Responsive) */
+        @media (max-width: 1200px) {
+            .results-grid { grid-template-columns: repeat(3, 1fr); } /* Hafif küçülünce 3'e düşsün */
+        }
+        @media (max-width: 900px) {
+            .results-grid { grid-template-columns: repeat(2, 1fr); } /* Tablette 2'ye düşsün */
+        }
+        @media (max-width: 600px) {
+            .results-grid { grid-template-columns: 1fr; } /* Mobilde tek sütun */
         }
 
-        .user-item {
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        /* Kart Tasarımı */
+        .data-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px; border-radius: 16px; color: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            animation: popIn 0.5s ease backwards;
+            word-wrap: break-word; overflow: hidden;
         }
+        .data-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.25); }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        .project-item {
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 10px; }
+        .card-title { font-weight: bold; font-size: 1.1rem; }
+        .score-badge { padding: 4px 8px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; background: white; color: #333; }
+        .high-score { color: #2ecc71; } .mid-score { color: #f1c40f; } .low-score { color: #e74c3c; } 
+
+        /* Login Overlay - Tam Ekran */
+#loginOverlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Arkayı karart */
+    backdrop-filter: blur(10px);    /* Arkayı buzla */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* En üstte dur */
+    animation: fadeIn 0.5s ease;
+}
+
+/* Giriş Kartı */
+.login-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    color: #333;
+}
+
+.login-card input {
+    width: 100%;
     padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 5px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
 }
-.status-badge {
-    font-size: 0.8rem;
-    padding: 3px 8px;
-    border-radius: 5px;
-    background: rgba(0,0,0,0.3);
-    margin-left: 10px;
+
+.login-card button {
+    width: 100%;
+    background: #2575fc;
+    color: white;
+    justify-content: center;
 }
+
+#editModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none; /* JS ile flex yapılacak */
+            justify-content: center; align-items: center;
+        }
+
+        .modal-content {
+            background: #2d3436; color: white; width: 90%; max-width: 800px;
+            border-radius: 15px; box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+            overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .modal-header { background: rgba(255,255,255,0.1); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        .close-btn { font-size: 2rem; cursor: pointer; } .close-btn:hover { color: #ff6b6b; }
+        .modal-body { padding: 25px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
+        @media (max-width: 700px) { .modal-body { grid-template-columns: 1fr; } }
+        .modal-section label { display: block; margin-bottom: 5px; font-weight: bold; margin-top: 10px; }
+        .modal-section select, .modal-section textarea { width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; }
+        .modal-footer { padding: 15px 25px; background: rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; }
+        .file-item { background: rgba(255,255,255,0.05); padding: 8px; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 
 <body>
 
-    <!-- Gradient background -->
-    <div class="animated-bg"></div>
+   <div id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Proje Detayları</h2>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-section">
+                    <label>Proje Durumu:</label>
+                    <select id="editStatus">
+                        <option value="proposal">🔵 Öneri (Proposal)</option>
+                        <option value="development">🟡 Geliştiriliyor (Development)</option>
+                        <option value="submitted">🟣 Teslim Edildi (Submitted)</option>
+                        <option value="approved">🟢 Onaylandı (Approved)</option>
+                        <option value="rejected">🔴 Reddedildi (Rejected)</option>
+                    </select>
+    
+                    <label>Özet / Açıklama:</label>
+                    <textarea id="editSummary" rows="5"></textarea>
+    
+                    <p style="font-size:0.85rem; opacity:0.7; margin-top:10px;">
+                        📚 <strong>Ders:</strong> <span id="modalCourse"></span><br>
+                        👤 <strong>Öğrenci:</strong> <span id="modalStudent"></span>
+                    </p>
+                </div>
+    
+                <div class="modal-section" style="border-left:1px solid rgba(255,255,255,0.2); padding-left:20px;">
+                    <h3>📂 Proje Dosyaları</h3>
+                    <div id="modalFilesList" style="margin-top:10px; font-size:0.9rem;">
+                        Yükleniyor...
+                    </div>
+                </div>
+            </div>
+    
+            <div class="modal-footer">
+                <p id="permissionText" style="font-size:0.8rem; color:#ffcc00; display:none;">⚠️ Bu projeyi düzenleme yetkiniz yok (Sadece Danışmanlar).</p>
+                <button id="btnSaveProject" onclick="saveProjectChanges()" style="background:#2ecc71; color:white;">💾 Değişiklikleri Kaydet</button>
+            </div>
+        </div>
+    </div>
 
-    <!-- Particles container -->
-    <div class="particles"></div>
+    <div id="loginOverlay">
+        <div class="login-card">
+            <h2>Giriş Yap</h2>
+            <p>Devam etmek için lütfen kimliğinizi doğrulayın.</p>
+            
+            <input type="text" id="emailInput" placeholder="E-posta Adresi" value="durmus.ozdemir@dpu.edu.tr">
+            <input type="password" id="passwordInput" placeholder="Şifre" value="hash123">
+            
+            <button onclick="handleLogin()">Giriş Yap</button>
+            <p id="loginError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 10px;"></p>
+            
+            <div style="margin-top: 20px; font-size: 0.8rem; opacity: 0.7;">
+                <p>Örnek Öğretmen: durmus.ozdemir@dpu.edu.tr</p>
+                <p>Örnek Öğrenci: caner.cakal@ogr.dpu.edu.tr</p>
+                <p>Şifre: hash123</p>
+            </div>
+        </div>
+    </div>
 
-    <div class="container">
-        <h1>Hoşgeldiniz!</h1>
-        <p>Backend’deki kullanıcıları veya projeleri görmek için butonları kullanabilirsiniz.</p>
+    <div id="mainDashboard" style="display: none;">
+        
+        <div class="animated-bg"></div>
+        <div class="particles"></div>
 
-        <button id="btnLoad" button onclick="loadUsers()">Kullanıcıları Göster</button>
-        <div id="userList"></div>
+        <div class="control-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:15px;">
+                <h1>Üniversite Veritabanı</h1>
+                <button onclick="logout()" style="background:rgba(255,0,0,0.3); font-size:0.8rem;">🚪 Çıkış</button>
+            </div>
+            
+            <p>Aşağıdaki butonları kullanarak sistemdeki verileri listeleyebilirsiniz.</p>
+    
+            <div class="btn-group">
+                <button class="btn-users" onclick="loadUsers()">👤 Kullanıcılar</button>
+                <button class="btn-projects" onclick="loadProjects()">🚀 Projeler</button>
+                <button class="btn-depts" onclick="loadDepartments()">🏛️ Bölümler</button>
+                <button class="btn-reviews" onclick="loadReviews()">⭐ Değerlendirmeler</button>
+                <button class="btn-courses" onclick="loadCourses()">📚 Dersler</button>
+                <button class="btn-files" onclick="loadFiles()">📂 Dosyalar</button>
+                <button class="btn-supervisors" onclick="loadSupervisors()">🎓 Danışmanlar</button>
+            </div>
+        </div>
 
-        <button id="btnProjects" onclick="loadProjects()" style="margin-top: 10px; background: #ff4e50; color: white;">Projeleri Göster</button>
-        <div id="projectList"></div>
+        <div id="displayArea" class="results-grid"></div>
+
     </div>
 
     <script>
-        /* 🎇 Rastgele partiküller oluşturma */
-        const particleArea = document.querySelector(".particles");
+        const API_URL = "http://localhost:3000";
+        const displayArea = document.getElementById("displayArea");
 
-        function createParticle() {
-            const p = document.createElement("div");
-            p.classList.add("particle");
+        /* --- GLOBAL DEĞİŞKENLER --- */
+        let currentUser = null; 
+        let allProjects = []; 
+        let currentEditingProjectId = null;
 
-            p.style.left = Math.random() * 100 + "vw";
-            p.style.animationDuration = 5 + Math.random() * 6 + "s";
-            p.style.opacity = Math.random();
 
-            particleArea.appendChild(p);
+/* --- GİRİŞ / ÇIKIŞ --- */
+        async function handleLogin() {
+            const email = document.getElementById("emailInput").value;
+            const password = document.getElementById("passwordInput").value;
+            const errorMsg = document.getElementById("loginError");
+            const btn = document.querySelector(".login-card button");
 
-            setTimeout(() => p.remove(), 11000);
+            btn.innerText = "Kontrol ediliyor...";
+
+            try {
+                const res = await fetch(`${API_URL}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    // 1. Kullanıcıyı tarayıcı hafızasına kaydet (Session mantığı)
+                    localStorage.setItem("currentUser", JSON.stringify(data.user));
+                    // 2. Eğer Admin ise (RoleID == 1), Admin Paneline yönlendir
+                     if (data.user.RoleID === 1) {
+                    window.location.href = "admin.html";
+                    return; // Fonksiyonu burada kes
+                }
+                    currentUser = data.user;
+                    // Giriş ekranını gizle, ana paneli aç
+                    document.getElementById("loginOverlay").style.display = "none";
+                    document.getElementById("mainDashboard").style.display = "block";
+                    document.querySelector("h1").innerText = `Hoşgeldin, ${currentUser.FullName}`;
+                    loadProjects(); // Otomatik projeleri yükle
+                } else {
+                    errorMsg.innerText = data.message;
+                    btn.innerText = "Giriş Yap";
+                }
+            } catch (err) {
+                console.error(err);
+                errorMsg.innerText = "Sunucuya bağlanılamadı.";
+                btn.innerText = "Giriş Yap";
+            }
         }
 
-        setInterval(createParticle, 300);
+function logout() { location.reload(); }
 
-        /* Backend bağlantısı */
-        /* Backend bağlantısı ve Toggle (Aç/Kapa) Mantığı */
+        function clearDisplay() {
+            displayArea.innerHTML = "";
+            displayArea.classList.add("results-grid"); 
+            displayArea.style.display = "grid"; 
+        }
+
+        /* 1. KULLANICILAR */
+        /* 👤 KULLANICILARI AYRI AYRI LİSTELE */
 async function loadUsers() {
-    const list = document.getElementById("userList");
-    const btn = document.getElementById("btnLoad");
+    // 1. Alanı temizle
+    const displayArea = document.getElementById("displayArea");
+    displayArea.innerHTML = "";
+    
+    // 2. Ana Grid yapısını BU SAYFA İÇİN kaldırıyoruz (Alt alta başlıklar koyabilmek için)
+    displayArea.classList.remove("results-grid");
+    displayArea.style.display = "block"; 
 
-        // Başka bir liste açıksa onu kapat
-    const projectList = document.getElementById("projectList");
-    const projectBtn = document.getElementById("btnProjects");
-    if (projectList.style.display === "block") {
-        projectList.style.display = "none";
-        projectBtn.innerText = "Projeleri Göster";
-    }
+    // Yükleniyor mesajı (Opsiyonel ama şık durur)
+    displayArea.innerHTML = "<p style='text-align:center; color:white; padding-top:20px;'>Kullanıcılar ayrıştırılıyor...</p>";
 
-    // Eğer liste zaten açıksa (Görünür durumdaysa) -> KAPAT
-    if (list.style.display === "block") {
-        list.style.display = "none";       // Listeyi gizle
-        btn.innerText = "Kullanıcıları Göster"; // Buton yazısını eski haline getir
-        return; // Fonksiyondan çık, tekrar veri çekmeye gerek yok
-    }
-
-    // Eğer liste kapalıysa -> VERİYİ ÇEK VE GÖSTER
     try {
-        /* Butona tıklandığını hissettirmek için yükleniyor diyebiliriz (Opsiyonel) */
-        btn.innerText = "Yükleniyor...";
-
-        const res = await fetch("http://localhost:3000/users");
+        const res = await fetch(`${API_URL}/users`);
         const data = await res.json();
+        displayArea.innerHTML = ""; // Yükleniyor yazısını sil
 
-        list.innerHTML = ""; // Önceki verileri temizle
-        list.style.display = "block"; // Listeyi görünür yap
+        // 3. Veriyi Filtrele (SQL'deki ID'lere göre: 2=Öğretmen, 3=Öğrenci)
+        const teachers = data.filter(user => user.RoleID === 2);
+        const students = data.filter(user => user.RoleID === 3);
 
-        data.forEach(user => {
-            const div = document.createElement("div");
-            div.classList.add("user-item");
-            // Güvenlik notu: user.FullName yoksa hata vermemesi için kontrol eklenebilir
-            div.innerHTML = `<strong>${user.FullName || 'İsimsiz'}</strong> — ${user.Email || 'E-posta yok'}`;
-            list.appendChild(div);
-        });
+        /* --- ÖĞRETMENLER BÖLÜMÜ --- */
+        const teacherTitle = document.createElement("h2");
+        teacherTitle.innerHTML = "🎓 Akademik Kadro";
+        teacherTitle.style.cssText = "color:white; margin: 20px 0 15px 2%; border-bottom:1px solid rgba(255,255,255,0.3); display:inline-block; padding-bottom:5px;";
+        displayArea.appendChild(teacherTitle);
 
-        // İşlem bitince buton yazısını güncelle
-        btn.innerText = "Kullanıcıları Gizle"; 
+        const teacherGrid = document.createElement("div");
+        teacherGrid.className = "results-grid"; // İçeride tekrar Grid oluşturuyoruz
+        teacherGrid.style.width = "100%"; // Tam genişlik
+        teacherGrid.style.margin = "0";   // Dış boşluğu sıfırla
         
-    } catch (error) {
-        console.error("Veri çekme hatası:", error);
-        btn.innerText = "Hata Oluştu - Tekrar Dene";
+        teachers.forEach((user, i) => {
+            const card = createCard(user, i, "teacher");
+            teacherGrid.appendChild(card);
+        });
+        displayArea.appendChild(teacherGrid);
+
+
+        /* --- ÖĞRENCİLER BÖLÜMÜ --- */
+        const studentTitle = document.createElement("h2");
+        studentTitle.innerHTML = "🎒 Öğrenciler";
+        studentTitle.style.cssText = "color:white; margin: 40px 0 15px 2%; border-bottom:1px solid rgba(255,255,255,0.3); display:inline-block; padding-bottom:5px;";
+        displayArea.appendChild(studentTitle);
+
+        const studentGrid = document.createElement("div");
+        studentGrid.className = "results-grid";
+        studentGrid.style.width = "100%";
+        studentGrid.style.margin = "0";
+
+        students.forEach((user, i) => {
+            const card = createCard(user, i, "student");
+            studentGrid.appendChild(card);
+        });
+        displayArea.appendChild(studentGrid);
+
+
+    } catch (e) {
+        console.error(e);
+        displayArea.innerHTML = `<p style="color:#ffcccc; text-align:center;">Veri çekilemedi.</p>`;
     }
 }
-// ... (loadUsers fonksiyonu burada bitiyor)
 
-/* 📂 Projeleri Çekme ve Listeleme Fonksiyonu */
+// Kart Oluşturucu Yardımcı Fonksiyon (Kod tekrarını önlemek için)
+function createCard(user, index, type) {
+    const card = document.createElement("div");
+    card.className = "data-card";
+    card.style.animationDelay = index * 0.05 + "s";
+    
+    // Öğretmen ve Öğrenci için farklı ikon/renk
+    let icon = type === "teacher" ? "👨‍🏫" : "🧑‍🎓";
+    let roleName = type === "teacher" ? "Öğretim Üyesi" : "Öğrenci";
+    
+    card.innerHTML = `
+        <div class="card-header">
+            <span class="card-title">${icon} ${user.FullName}</span>
+        </div>
+        <div style="font-size:0.9rem; opacity:0.9; margin-bottom:5px;">
+            📧 ${user.Email}
+        </div>
+        <div style="font-size:0.75rem; opacity:0.6; text-align:right; margin-top:10px;">
+            ${roleName} (ID: ${user.UserID})
+        </div>
+    `;
+    return card;
+}
+
+        /* 2. 🚀 PROJELERİ LİSTELE (GÜNCELLENMİŞ) */
 async function loadProjects() {
-    const list = document.getElementById("projectList");
-    const btn = document.getElementById("btnProjects");
+    clearDisplay();
+    try {
+        const res = await fetch(`${API_URL}/projects`);
+        const data = await res.json();
 
-    // Başka bir liste açıksa onu kapat
-    const userList = document.getElementById("userList");
-    const userBtn = document.getElementById("btnLoad");
-    if (userList.style.display === "block") {
-        userList.style.display = "none";
-        userBtn.innerText = "Kullanıcıları Göster";
+        allProjects = data; // 🔥 YENİ: Veriyi global değişkene kopyaladık!
+
+        if (data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Henüz proje yok.</p>";
+
+        data.forEach((proj, i) => {
+            // Statüye göre renk ayarı
+            let statusColor = "#ccc";
+            let statusText = proj.Status;
+            if(proj.Status === 'approved') { statusColor = "#2ecc71"; statusText = "Onaylandı"; }
+            if(proj.Status === 'development') { statusColor = "#f1c40f"; statusText = "Geliştiriliyor"; }
+            if(proj.Status === 'proposal') { statusColor = "#3498db"; statusText = "Öneri"; }
+            if(proj.Status === 'submitted') { statusColor = "#9b59b6"; statusText = "Teslim Edildi"; }
+
+            const card = document.createElement("div");
+            card.className = "data-card";
+            card.style.borderLeft = `5px solid ${statusColor}`; 
+            card.style.animationDelay = i * 0.05 + "s";
+            
+            /* Aşağıdaki kısımda artık proj.CourseName kullanıyoruz.
+               Eğer veri gelmezse 'Belirtilmemiş' yazar, böylece undefined hatası kalkar.
+            */
+           const safeSummary = (proj.Summary || '').replace(/"/g, '&quot;'); // Tırnak hatasını önlemek için
+        const safeTitle = (proj.Title || '').replace(/"/g, '&quot;');
+        
+           let adminActions = "";
+            if (currentUser && currentUser.RoleID === 2) {
+                adminActions = `
+                    <div style="margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2); display:flex; gap:10px; justify-content:flex-end;">
+                        <button onclick="openEditModal(${proj.ProjectID})" 
+                            style="background:#f1c40f; color:#333; padding:5px 10px; font-size:0.8rem; border:none; border-radius:5px; cursor:pointer;">
+                            ✏️ Detay & Düzenle
+                        </button>
+
+                        <button onclick="deleteProject(${proj.ProjectID})" 
+                            style="background:#e74c3c; color:white; padding:5px 10px; font-size:0.8rem; border:none; border-radius:5px; cursor:pointer;">
+                            🗑️ Sil
+                        </button>
+                    </div>
+                `;
+    }
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-title">${proj.Title}</span>
+                    <span style="background:${statusColor}; color:white; font-size:0.75rem; padding:3px 8px; border-radius:4px; font-weight:bold;">${statusText || proj.Status}</span>
+                </div>
+                <p style="font-size:0.9rem; opacity:0.9; margin-bottom:15px;">${proj.Summary || 'Açıklama girilmemiş.'}</p>
+                <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; font-size:0.85rem;">
+                    <div>📚 <strong>Ders:</strong> ${proj.CourseCode || ''} - ${proj.CourseName || 'Ders Bilgisi Yok'}</div>
+                    <div>👤 <strong>Öğrenci:</strong> ${proj.StudentName || 'Bilinmiyor'}</div>
+                </div>
+        
+        ${adminActions} `;
+            displayArea.appendChild(card);
+        });
+    } catch (e) { 
+        console.error(e);
+        showError(); 
     }
 
-    // 1. AÇ/KAPA (Toggle) Mantığı
-    if (list.style.display === "block") {
-        list.style.display = "none";
-        btn.innerText = "Projeleri Göster";
+    function deleteProject(id) {
+    if(confirm("Bu projeyi silmek istediğinize emin misiniz? (Bu işlem admin yetkisi gerektirir)")) {
+        // Burada normalde fetch(API_URL + '/delete/' + id) yapılır.
+        alert("Backend delete endpoint'i henüz bağlanmadı ama yetkiniz var!");
+        // Görsel olarak silmek için: loadProjects();
+    }
+}
+}
+
+        /* 3. BÖLÜMLER (YENİ) */
+        async function loadDepartments() {
+            clearDisplay();
+            try {
+                // Backend'de "/departments" endpointi olmalı
+                const res = await fetch(`${API_URL}/departments`); 
+                const data = await res.json();
+
+                if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Bölüm bulunamadı.</p>";
+
+                data.forEach((dept, i) => {
+                    const card = document.createElement("div");
+                    card.className = "data-card";
+                    card.style.animationDelay = i * 0.05 + "s";
+                    card.style.textAlign = "center"; // Ortala
+                    
+                    // Rastgele bir ikon veya görsel efekt
+                    card.innerHTML = `
+                        <div style="font-size:3rem; margin-bottom:10px;">🏛️</div>
+                        <h3 style="font-size:1.2rem; margin-bottom:5px;">${dept.DepartmentName}</h3>
+                        <p style="opacity:0.6; font-size:0.8rem;">ID: ${dept.DepartmentID}</p>
+                    `;
+                    displayArea.appendChild(card);
+                });
+            } catch (e) { showError(); }
+        }
+
+        /* 4. DEĞERLENDİRMELER (YENİ - JOIN'li Veri) */
+        async function loadReviews() {
+            clearDisplay();
+            try {
+                // Backend'de "/reviews" endpointi olmalı
+                const res = await fetch(`${API_URL}/reviews`); 
+                const data = await res.json();
+
+                if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Henüz değerlendirme yok.</p>";
+
+                data.forEach((rev, i) => {
+                    const card = document.createElement("div");
+                    card.className = "data-card";
+                    card.style.animationDelay = i * 0.05 + "s";
+
+                    // Puana göre renk sınıfı belirle
+                    let scoreClass = "low-score";
+                    if(rev.Score >= 85) scoreClass = "high-score";
+                    else if(rev.Score >= 70) scoreClass = "mid-score";
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <span class="card-title" style="font-size:1rem;">${rev.ProjectTitle || 'Proje #' + rev.ProjectID}</span>
+                            <span class="score-badge ${scoreClass}">${rev.Score}/100</span>
+                        </div>
+                        <p style="font-style:italic; opacity:0.9; margin: 15px 0;">" ${rev.Comment} "</p>
+                        <div style="text-align:right; font-size:0.85rem; opacity:0.8;">
+                            ✍️ <strong>${rev.ReviewerName || 'Bilinmiyor'}</strong>
+                        </div>
+                    `;
+                    displayArea.appendChild(card);
+                });
+            } catch (e) { showError(); }
+        }
+
+        /* -------------------------------------------------------------------------- */
+/* 5. DERSLERİ LİSTELE                                                        */
+/* -------------------------------------------------------------------------- */
+async function loadCourses() {
+    clearDisplay();
+    try {
+        const res = await fetch(`${API_URL}/courses`);
+        const data = await res.json();
+
+        if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Ders bulunamadı.</p>";
+
+        data.forEach((course, i) => {
+            const card = document.createElement("div");
+            card.className = "data-card";
+            card.style.animationDelay = i * 0.05 + "s";
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-title">${course.CourseCode}</span>
+                    <span style="font-size:0.8rem; background:rgba(0,0,0,0.2); padding:3px 8px; border-radius:4px;">
+                        ${course.Term || 'Dönem Yok'}
+                    </span>
+                </div>
+                <p style="font-weight:600; font-size:1.1rem; margin-bottom:5px;">${course.CourseName}</p>
+                <p style="font-size:0.8rem; opacity:0.7;">Bağlı Bölüm ID: ${course.DepartmentID}</p>
+            `;
+            displayArea.appendChild(card);
+        });
+    } catch (e) { showError(); }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. DOSYALARI LİSTELE (Teslim Edilenler)                                    */
+/* -------------------------------------------------------------------------- */
+async function loadFiles() {
+    clearDisplay();
+    try {
+        const res = await fetch(`${API_URL}/files`);
+        const data = await res.json();
+
+        if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Dosya bulunamadı.</p>";
+
+        data.forEach((file, i) => {
+            const card = document.createElement("div");
+            card.className = "data-card";
+            card.style.animationDelay = i * 0.05 + "s";
+
+            // Dosya uzantısına göre ikon seçimi (Basit mantık)
+            let icon = "📄";
+            if(file.FileName.includes(".pdf")) icon = "📕";
+            if(file.FileName.includes(".zip")) icon = "📦";
+            if(file.FileName.includes(".docx")) icon = "📝";
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-title" style="font-size:1rem;">${file.ProjectTitle}</span>
+                    <span style="font-size:0.8rem; opacity:0.8;">v${file.Version}</span>
+                </div>
+                
+                <div style="display:flex; align-items:center; gap:15px; margin:15px 0;">
+                    <div style="font-size:2.5rem;">${icon}</div>
+                    <div>
+                        <div style="font-weight:bold;">${file.FileName}</div>
+                        <div style="font-size:0.8rem; opacity:0.6;">${file.FilePath}</div>
+                    </div>
+                </div>
+
+                <div style="text-align:right; font-size:0.8rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                    Yükleyen: <strong>${file.UploaderName}</strong>
+                </div>
+            `;
+            displayArea.appendChild(card);
+        });
+    } catch (e) { showError(); }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. DANIŞMAN GÖRÜŞLERİNİ LİSTELE                                            */
+/* -------------------------------------------------------------------------- */
+async function loadSupervisors() {
+    clearDisplay();
+    try {
+        const res = await fetch(`${API_URL}/supervisors`);
+        const data = await res.json();
+
+        if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Görüş bulunamadı.</p>";
+
+        data.forEach((sup, i) => {
+            const card = document.createElement("div");
+            card.className = "data-card";
+            card.style.animationDelay = i * 0.05 + "s";
+
+            // Onay Durumu (Accepted = 1 ise Yeşil Tik, 0 ise Kırmızı Çarpı)
+            // SQL'de Accepted BIT olduğu için true/false veya 1/0 gelebilir.
+            let statusIcon = sup.Accepted ? "✅ Onaylandı" : "❌ Revize/Red";
+            let statusStyle = sup.Accepted ? "color:#2ecc71;" : "color:#e74c3c;";
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-title" style="font-size:1rem;">${sup.ProjectTitle}</span>
+                </div>
+                
+                <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">
+                     <p style="font-style:italic;">"${sup.FeedbackText || 'Henüz yorum yok.'}"</p>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.9rem;">
+                    <div>🎓 <strong>${sup.SupervisorName}</strong></div>
+                    <div style="font-weight:bold; ${statusStyle}">${statusIcon}</div>
+                </div>
+            `;
+            displayArea.appendChild(card);
+        });
+    } catch (e) { showError(); }
+}
+
+/* -------------------------------------------------------------------------- */
+/* A. MODALI AÇMA VE VERİ DOLDURMA                                            */
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+/* A. MODALI AÇMA (GÜNCELLENMİŞ - ROBUST YÖNTEM)                              */
+/* -------------------------------------------------------------------------- */
+async function openEditModal(projID) {
+    currentEditingProjectId = projID;
+    
+    // 1. Veriyi hafızadan bul
+    const project = allProjects.find(p => p.ProjectID === projID);
+    
+    if (!project) {
+        alert("Proje detayları bulunamadı!");
         return;
     }
 
-    // 2. Veri Çekme
+    const modal = document.getElementById("editModal");
+    const btnSave = document.getElementById("btnSaveProject");
+    const permText = document.getElementById("permissionText");
+
+    // 2. Bilgileri Doldur
+    document.getElementById("modalTitle").innerText = `Düzenle: ${project.Title}`;
+    document.getElementById("editStatus").value = project.Status;
+    document.getElementById("editSummary").value = project.Summary || "";
+    document.getElementById("modalCourse").innerText = project.CourseName || "Belirtilmemiş";
+    document.getElementById("modalStudent").innerText = project.StudentName || "Bilinmiyor";
+
+    // Modalı Göster
+    modal.style.display = "flex";
+
+    // 3. Dosyaları Çek
+    loadProjectFiles(projID);
+
+    // 4. YETKİ KONTROLÜ (Danışman mı?)
+    btnSave.style.display = "none";
+    btnSave.disabled = true;
+    permText.style.display = "none";
+
     try {
-        btn.innerText = "Yükleniyor...";
+        const res = await fetch(`${API_URL}/project-supervisor/${projID}`);
+        const supervisors = await res.json();
         
-        // Bu endpoint'in (http://localhost:3000/projects) Backend'de hazır olması zorunludur!
-        const res = await fetch("http://localhost:3000/projects"); 
-        
-        if (!res.ok) throw new Error("API Hatası");
+        // Giriş yapan hoca, bu projenin danışmanı mı?
+        const isSupervisor = supervisors.some(s => s.UserID === currentUser.UserID);
 
-        const data = await res.json();
-
-        list.innerHTML = ""; // Temizle
-        list.style.display = "block"; // Göster
-
-        if(data.length === 0) {
-            list.innerHTML = "<p style='text-align:center'>Henüz proje yok.</p>";
+        if (isSupervisor) {
+            btnSave.style.display = "block";
+            btnSave.disabled = false;
+            document.getElementById("editStatus").disabled = false;
+            document.getElementById("editSummary").disabled = false;
+        } else {
+            permText.style.display = "block";
+            permText.innerText = "🔒 Sadece atanan danışman düzenleyebilir.";
+            document.getElementById("editStatus").disabled = true;
+            document.getElementById("editSummary").disabled = true;
         }
-
-        data.forEach(proj => {
-            const div = document.createElement("div");
-            div.classList.add("project-item");
-            
-            // Proje Kartı İçeriği
-            div.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong style="font-size:1.1rem;">${proj.Title}</strong>
-                    <span class="status-badge">${proj.Status}</span>
-                </div>
-                <p style="font-size:0.9rem; margin-top:5px; opacity:0.8;">${proj.Summary}</p>
-                <div style="font-size:0.8rem; margin-top:8px; color:#eee;">
-                    👤 <strong>${proj.StudentName || 'Bilinmiyor'}</strong> | 📚 ${proj.CourseName || 'Ders Yok'}
-                </div>
-            `;
-            list.appendChild(div);
-        });
-
-        btn.innerText = "Projeleri Gizle";
-
-    } catch (error) {
-        console.error("Proje yükleme hatası:", error);
-        btn.innerText = "Hata - Tekrar Dene";
-        
-        // Hata detayını ekrana basmak istersen (Geliştirme aşamasında faydalı):
-        list.style.display = "block";
-        list.innerHTML = `<p style="color: #ffcccc;">Backend bağlantısı kurulamadı. <br> <small>http://localhost:3000/projects adresinin çalıştığından emin ol.</small></p>`;
+    } catch (e) {
+        console.error("Yetki kontrolü hatası:", e);
     }
 }
 
-// ... (Particle oluşturma kodu burada devam ediyor)
+/* B. DOSYALARI LİSTELEME */
+async function loadProjectFiles(projID) {
+    const list = document.getElementById("modalFilesList");
+    list.innerHTML = "⏳ Dosyalar getiriliyor...";
+
+    try {
+        const res = await fetch(`${API_URL}/project-files/${projID}`);
+        const files = await res.json();
+
+        if (files.length === 0) {
+            list.innerHTML = "<span style='opacity:0.5'>Dosya yüklenmemiş.</span>";
+            return;
+        }
+
+        list.innerHTML = "";
+        files.forEach(f => {
+            list.innerHTML += `
+                <div class="file-item">
+                    <span>📄</span>
+                    <div>
+                        <div style="font-weight:bold; font-size:0.85rem;">${f.FileName}</div>
+                        <div style="font-size:0.7rem; opacity:0.6;">v${f.Version} • ${new Date(f.UploadedAt).toLocaleDateString()}</div>
+                    </div>
+                </div>
+            `;
+        });
+    } catch (e) {
+        list.innerHTML = "Hata oluştu.";
+    }
+}
+
+/* C. KAYDETME İŞLEMİ */
+async function saveProjectChanges() {
+    const status = document.getElementById("editStatus").value;
+    const summary = document.getElementById("editSummary").value;
+
+    if(!confirm("Değişiklikleri kaydetmek istiyor musunuz?")) return;
+
+    try {
+        const res = await fetch(`${API_URL}/projects/${currentEditingProjectId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status, summary })
+        });
+        const data = await res.json();
+        
+        if(data.success) {
+            alert("✅ Başarıyla güncellendi!");
+            closeModal();
+            loadProjects(); // Listeyi yenile
+        } else {
+            alert("Hata: " + data.message);
+        }
+    } catch (e) {
+        alert("Sunucu hatası.");
+    }
+}
+
+/* D. SİLME İŞLEMİ (GÜNCELLENMİŞ) */
+async function deleteProject(id) {
+    if(!confirm("⚠️ DİKKAT: Bu projeyi ve tüm dosyalarını kalıcı olarak silmek istediğinize emin misiniz?")) return;
+
+    try {
+        const res = await fetch(`${API_URL}/projects/${id}`, { method: "DELETE" });
+        const data = await res.json();
+
+        if(data.success) {
+            alert("Proje silindi.");
+            loadProjects();
+        } else {
+            alert("Silinemedi: " + data.message);
+        }
+    } catch (e) {
+        alert("Hata oluştu.");
+    }
+}
+
+function closeModal() {
+    document.getElementById("editModal").style.display = "none";
+}
+
+        function showError() {
+            displayArea.innerHTML = `<p style="color:#ffcccc; text-align:center; width:100%;">Veri çekilemedi. Backend sunucusunun (localhost:3000) açık olduğundan ve endpointlerin (users, projects, departments, reviews) tanımlı olduğundan emin olun.</p>`;
+        }
+
+        /* Partikül Animasyonu */
+        const particleArea = document.querySelector(".particles");
+        setInterval(() => {
+            const p = document.createElement("div");
+            p.classList.add("particle");
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.animationDuration = 5 + Math.random() * 6 + "s";
+            p.style.opacity = Math.random();
+            particleArea.appendChild(p);
+            setTimeout(() => p.remove(), 11000);
+        }, 300);
 
     </script>
-
 </body>
 </html>
