@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +8,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
-        html, body {
-            width: 100%; min-height: 100vh;
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
             overflow-x: hidden;
             background: rgba(173, 107, 107, 0.462);
         }
 
         /* Arkaplan Animasyonu */
         .animated-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(120deg, #1e3c72, #2a5298, #ff4e50, #f9d423);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
@@ -26,77 +37,172 @@
         }
 
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* Partiküller */
-        .particles { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
         .particle {
-            position: absolute; width: 6px; height: 6px;
+            position: absolute;
+            width: 6px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.6);
             border-radius: 50%;
             animation: floatUp linear infinite;
         }
+
         @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(1); opacity: 1; }
-            100% { transform: translateY(-10vh) scale(0.3); opacity: 0; }
+            0% {
+                transform: translateY(100vh) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-10vh) scale(0.3);
+                opacity: 0;
+            }
         }
 
         /* 🔹 KONTROL PANELİ (Butonlar) */
         .control-panel {
-            width: 90%; 
-            max-width: 2000px; /* Genişlettik ki butonlar sığsın */
-            padding: 30px; 
+            width: 90%;
+            max-width: 2000px;
+            /* Genişlettik ki butonlar sığsın */
+            padding: 30px;
             margin: 40px auto;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 18px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            text-align: center; color: white;
+            text-align: center;
+            color: white;
             animation: fadeIn 1s ease;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
 
-        .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
         button {
-            padding: 10px 18px; font-size: 0.9rem; font-weight: 600;
-            border: none; border-radius: 10px; cursor: pointer;
-            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            display: flex; align-items: center; gap: 6px;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        button:hover { transform: translateY(-3px); filter: brightness(1.1); }
 
-        .btn-users { background: #fff; color: #2575fc; }
-        .btn-projects { background: #ff4e50; color: white; }
-        .btn-depts { background: #f9d423; color: #333; }
-        .btn-reviews { background: #6a11cb; color: white; }
-        .btn-courses { background: #00b894; color: white; }
-        .btn-files { background: #e17055; color: white; }
-        .btn-supervisors { background: #0984e3; color: white; }
+        button:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.1);
+        }
+
+        .btn-users {
+            background: #fff;
+            color: #2575fc;
+        }
+
+        .btn-projects {
+            background: #ff4e50;
+            color: white;
+        }
+
+        .btn-depts {
+            background: #f9d423;
+            color: #333;
+        }
+
+        .btn-reviews {
+            background: #6a11cb;
+            color: white;
+        }
+
+        .btn-courses {
+            background: #00b894;
+            color: white;
+        }
+
+        .btn-files {
+            background: #e17055;
+            color: white;
+        }
+
+        .btn-supervisors {
+            background: #0984e3;
+            color: white;
+        }
 
         /* 🔥 VERİ IZGARASI */
         .results-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
-            width: 95%; max-width: 1400px;
-            margin: 0 auto 60px auto; padding: 10px;
+            width: 95%;
+            max-width: 1400px;
+            margin: 0 auto 60px auto;
+            padding: 10px;
         }
 
         /* Tablet ve Mobilde bozulmaması için Medya Sorgusu (Responsive) */
         @media (max-width: 1200px) {
-            .results-grid { grid-template-columns: repeat(3, 1fr); } /* Hafif küçülünce 3'e düşsün */
+            .results-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            /* Hafif küçülünce 3'e düşsün */
         }
+
         @media (max-width: 900px) {
-            .results-grid { grid-template-columns: repeat(2, 1fr); } /* Tablette 2'ye düşsün */
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Tablette 2'ye düşsün */
         }
+
         @media (max-width: 600px) {
-            .results-grid { grid-template-columns: 1fr; } /* Mobilde tek sütun */
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Mobilde tek sütun */
         }
 
         /* Kart Tasarımı */
@@ -104,95 +210,218 @@
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 20px; border-radius: 16px; color: white;
+            padding: 20px;
+            border-radius: 16px;
+            color: white;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s;
             animation: popIn 0.5s ease backwards;
-            word-wrap: break-word; overflow: hidden;
+            word-wrap: break-word;
+            overflow: hidden;
         }
-        .data-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.25); }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 10px; }
-        .card-title { font-weight: bold; font-size: 1.1rem; }
-        .score-badge { padding: 4px 8px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; background: white; color: #333; }
-        .high-score { color: #2ecc71; } .mid-score { color: #f1c40f; } .low-score { color: #e74c3c; } 
+        .data-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .score-badge {
+            padding: 4px 8px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: white;
+            color: #333;
+        }
+
+        .high-score {
+            color: #2ecc71;
+        }
+
+        .mid-score {
+            color: #f1c40f;
+        }
+
+        .low-score {
+            color: #e74c3c;
+        }
 
         /* Login Overlay - Tam Ekran */
-#loginOverlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* Arkayı karart */
-    backdrop-filter: blur(10px);    /* Arkayı buzla */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* En üstte dur */
-    animation: fadeIn 0.5s ease;
-}
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            /* Arkayı karart */
+            backdrop-filter: blur(10px);
+            /* Arkayı buzla */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            /* En üstte dur */
+            animation: fadeIn 0.5s ease;
+        }
 
-/* Giriş Kartı */
-.login-card {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-    color: #333;
-}
+        /* Giriş Kartı */
+        .login-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            color: #333;
+        }
 
-.login-card input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-}
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
 
-.login-card button {
-    width: 100%;
-    background: #2575fc;
-    color: white;
-    justify-content: center;
-}
+        .login-card button {
+            width: 100%;
+            background: #2575fc;
+            color: white;
+            justify-content: center;
+        }
 
-#editModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
+        #editModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
             z-index: 2000;
-            display: none; /* JS ile flex yapılacak */
-            justify-content: center; align-items: center;
+            display: none;
+            /* JS ile flex yapılacak */
+            justify-content: center;
+            align-items: center;
         }
 
         .modal-content {
-            background: #2d3436; color: white; width: 90%; max-width: 800px;
-            border-radius: 15px; box-shadow: 0 15px 50px rgba(0,0,0,0.5);
-            overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+            background: #2d3436;
+            color: white;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .modal-header { background: rgba(255,255,255,0.1); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
-        .close-btn { font-size: 2rem; cursor: pointer; } .close-btn:hover { color: #ff6b6b; }
-        .modal-body { padding: 25px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
-        @media (max-width: 700px) { .modal-body { grid-template-columns: 1fr; } }
-        .modal-section label { display: block; margin-bottom: 5px; font-weight: bold; margin-top: 10px; }
-        .modal-section select, .modal-section textarea { width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; }
-        .modal-footer { padding: 15px 25px; background: rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; }
-        .file-item { background: rgba(255,255,255,0.05); padding: 8px; margin-bottom: 5px; border-radius: 5px; display: flex; align-items: center; gap: 10px; }
+
+        .modal-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #ff6b6b;
+        }
+
+        .modal-body {
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .modal-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .modal-section select,
+        .modal-section textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .modal-footer {
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
 </head>
 
 <body>
 
-   <div id="editModal">
+    <div id="editModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modalTitle">Proje Detayları</h2>
                 <span class="close-btn" onclick="closeModal()">&times;</span>
             </div>
-            
+
             <div class="modal-body">
                 <div class="modal-section">
                     <label>Proje Durumu:</label>
@@ -203,16 +432,16 @@
                         <option value="approved">🟢 Onaylandı (Approved)</option>
                         <option value="rejected">🔴 Reddedildi (Rejected)</option>
                     </select>
-    
+
                     <label>Özet / Açıklama:</label>
                     <textarea id="editSummary" rows="5"></textarea>
-    
+
                     <p style="font-size:0.85rem; opacity:0.7; margin-top:10px;">
                         📚 <strong>Ders:</strong> <span id="modalCourse"></span><br>
                         👤 <strong>Öğrenci:</strong> <span id="modalStudent"></span>
                     </p>
                 </div>
-    
+
                 <div class="modal-section" style="border-left:1px solid rgba(255,255,255,0.2); padding-left:20px;">
                     <h3>📂 Proje Dosyaları</h3>
                     <div id="modalFilesList" style="margin-top:10px; font-size:0.9rem;">
@@ -220,10 +449,12 @@
                     </div>
                 </div>
             </div>
-    
+
             <div class="modal-footer">
-                <p id="permissionText" style="font-size:0.8rem; color:#ffcc00; display:none;">⚠️ Bu projeyi düzenleme yetkiniz yok (Sadece Danışmanlar).</p>
-                <button id="btnSaveProject" onclick="saveProjectChanges()" style="background:#2ecc71; color:white;">💾 Değişiklikleri Kaydet</button>
+                <p id="permissionText" style="font-size:0.8rem; color:#ffcc00; display:none;">⚠️ Bu projeyi düzenleme
+                    yetkiniz yok (Sadece Danışmanlar).</p>
+                <button id="btnSaveProject" onclick="saveProjectChanges()" style="background:#2ecc71; color:white;">💾
+                    Değişiklikleri Kaydet</button>
             </div>
         </div>
     </div>
@@ -232,13 +463,13 @@
         <div class="login-card">
             <h2>Giriş Yap</h2>
             <p>Devam etmek için lütfen kimliğinizi doğrulayın.</p>
-            
+
             <input type="text" id="emailInput" placeholder="E-posta Adresi" value="durmus.ozdemir@dpu.edu.tr">
             <input type="password" id="passwordInput" placeholder="Şifre" value="hash123">
-            
+
             <button onclick="handleLogin()">Giriş Yap</button>
             <p id="loginError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 10px;"></p>
-            
+
             <div style="margin-top: 20px; font-size: 0.8rem; opacity: 0.7;">
                 <p>Örnek Öğretmen: durmus.ozdemir@dpu.edu.tr</p>
                 <p>Örnek Öğrenci: caner.cakal@ogr.dpu.edu.tr</p>
@@ -248,18 +479,19 @@
     </div>
 
     <div id="mainDashboard" style="display: none;">
-        
+
         <div class="animated-bg"></div>
         <div class="particles"></div>
 
         <div class="control-panel">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:15px;">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:15px;">
                 <h1>Üniversite Veritabanı</h1>
                 <button onclick="logout()" style="background:rgba(255,0,0,0.3); font-size:0.8rem;">🚪 Çıkış</button>
             </div>
-            
+
             <p>Aşağıdaki butonları kullanarak sistemdeki verileri listeleyebilirsiniz.</p>
-    
+
             <div class="btn-group">
                 <button class="btn-users" onclick="loadUsers()">👤 Kullanıcılar</button>
                 <button class="btn-projects" onclick="loadProjects()">🚀 Projeler</button>
@@ -275,17 +507,74 @@
 
     </div>
 
+    <div id="addProjectModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; justify-content:center; align-items:center;">
+        <div class="modal-content"
+            style="background:#2d3436; color:white; width:90%; max-width:500px; padding:25px; border-radius:15px; position:relative;">
+            <span onclick="closeAddModal()"
+                style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:1.5rem;">&times;</span>
+            <h2 style="margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px;">Yeni
+                Proje Önerisi</h2>
+
+            <div style="display:flex; flex-direction:column; gap:15px;">
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold;">Proje Başlığı:</label>
+                    <input type="text" id="newProjTitle" placeholder="Örn: Kütüphane Otomasyonu"
+                        style="width:100%; padding:10px; border-radius:5px; border:none;">
+                </div>
+
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold;">Bağlı Olduğu Ders:</label>
+                    <select id="newProjCourse"
+                        style="width:100%; padding:10px; border-radius:5px; border:none; background:white; color:#333;">
+                        <option value="">Ders Seçiniz...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:bold;">Proje Özeti:</label>
+                    <textarea id="newProjSummary" rows="4" placeholder="Projenin amacı ve kapsamı..."
+                        style="width:100%; padding:10px; border-radius:5px; border:none;"></textarea>
+                </div>
+
+                <button onclick="saveNewProject()"
+                    style="background:#0984e3; color:white; padding:12px; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:10px;">
+                    🚀 Projeyi Oluştur
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fileUploadModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; justify-content:center; align-items:center;">
+        <div class="modal-content"
+            style="background:#2d3436; color:white; width:90%; max-width:400px; padding:25px; border-radius:15px; text-align:center; position:relative;">
+            <span onclick="closeFileModal()"
+                style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:1.5rem;">&times;</span>
+            <h3>Dosya Yükle</h3>
+            <p style="font-size:0.8rem; opacity:0.7; margin-bottom:20px;">Projeniz için bir teslim dosyası seçin.</p>
+
+            <input type="file" id="inpFileSelect"
+                style="background:rgba(255,255,255,0.1); padding:10px; width:100%; border-radius:5px; margin-bottom:20px;">
+
+            <button onclick="uploadFileAction()"
+                style="background:#0984e3; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; width:100%;">
+                📤 Yükle ve Kaydet
+            </button>
+        </div>
+    </div>
+
     <script>
         const API_URL = "http://localhost:3000";
         const displayArea = document.getElementById("displayArea");
 
         /* --- GLOBAL DEĞİŞKENLER --- */
-        let currentUser = null; 
-        let allProjects = []; 
+        let currentUser = null;
+        let allProjects = [];
         let currentEditingProjectId = null;
 
 
-/* --- GİRİŞ / ÇIKIŞ --- */
+        /* --- GİRİŞ / ÇIKIŞ --- */
         async function handleLogin() {
             const email = document.getElementById("emailInput").value;
             const password = document.getElementById("passwordInput").value;
@@ -306,10 +595,10 @@
                     // 1. Kullanıcıyı tarayıcı hafızasına kaydet (Session mantığı)
                     localStorage.setItem("currentUser", JSON.stringify(data.user));
                     // 2. Eğer Admin ise (RoleID == 1), Admin Paneline yönlendir
-                     if (data.user.RoleID === 1) {
-                    window.location.href = "admin.html";
-                    return; // Fonksiyonu burada kes
-                }
+                    if (data.user.RoleID === 1) {
+                        window.location.href = "admin.html";
+                        return; // Fonksiyonu burada kes
+                    }
                     currentUser = data.user;
                     // Giriş ekranını gizle, ana paneli aç
                     document.getElementById("loginOverlay").style.display = "none";
@@ -327,90 +616,90 @@
             }
         }
 
-function logout() { location.reload(); }
+        function logout() { location.reload(); }
 
         function clearDisplay() {
             displayArea.innerHTML = "";
-            displayArea.classList.add("results-grid"); 
-            displayArea.style.display = "grid"; 
+            displayArea.classList.add("results-grid");
+            displayArea.style.display = "grid";
         }
 
         /* 1. KULLANICILAR */
         /* 👤 KULLANICILARI AYRI AYRI LİSTELE */
-async function loadUsers() {
-    // 1. Alanı temizle
-    const displayArea = document.getElementById("displayArea");
-    displayArea.innerHTML = "";
-    
-    // 2. Ana Grid yapısını BU SAYFA İÇİN kaldırıyoruz (Alt alta başlıklar koyabilmek için)
-    displayArea.classList.remove("results-grid");
-    displayArea.style.display = "block"; 
+        async function loadUsers() {
+            // 1. Alanı temizle
+            const displayArea = document.getElementById("displayArea");
+            displayArea.innerHTML = "";
 
-    // Yükleniyor mesajı (Opsiyonel ama şık durur)
-    displayArea.innerHTML = "<p style='text-align:center; color:white; padding-top:20px;'>Kullanıcılar ayrıştırılıyor...</p>";
+            // 2. Ana Grid yapısını BU SAYFA İÇİN kaldırıyoruz (Alt alta başlıklar koyabilmek için)
+            displayArea.classList.remove("results-grid");
+            displayArea.style.display = "block";
 
-    try {
-        const res = await fetch(`${API_URL}/users`);
-        const data = await res.json();
-        displayArea.innerHTML = ""; // Yükleniyor yazısını sil
+            // Yükleniyor mesajı (Opsiyonel ama şık durur)
+            displayArea.innerHTML = "<p style='text-align:center; color:white; padding-top:20px;'>Kullanıcılar ayrıştırılıyor...</p>";
 
-        // 3. Veriyi Filtrele (SQL'deki ID'lere göre: 2=Öğretmen, 3=Öğrenci)
-        const teachers = data.filter(user => user.RoleID === 2);
-        const students = data.filter(user => user.RoleID === 3);
+            try {
+                const res = await fetch(`${API_URL}/users`);
+                const data = await res.json();
+                displayArea.innerHTML = ""; // Yükleniyor yazısını sil
 
-        /* --- ÖĞRETMENLER BÖLÜMÜ --- */
-        const teacherTitle = document.createElement("h2");
-        teacherTitle.innerHTML = "🎓 Akademik Kadro";
-        teacherTitle.style.cssText = "color:white; margin: 20px 0 15px 2%; border-bottom:1px solid rgba(255,255,255,0.3); display:inline-block; padding-bottom:5px;";
-        displayArea.appendChild(teacherTitle);
+                // 3. Veriyi Filtrele (SQL'deki ID'lere göre: 2=Öğretmen, 3=Öğrenci)
+                const teachers = data.filter(user => user.RoleID === 2);
+                const students = data.filter(user => user.RoleID === 3);
 
-        const teacherGrid = document.createElement("div");
-        teacherGrid.className = "results-grid"; // İçeride tekrar Grid oluşturuyoruz
-        teacherGrid.style.width = "100%"; // Tam genişlik
-        teacherGrid.style.margin = "0";   // Dış boşluğu sıfırla
-        
-        teachers.forEach((user, i) => {
-            const card = createCard(user, i, "teacher");
-            teacherGrid.appendChild(card);
-        });
-        displayArea.appendChild(teacherGrid);
+                /* --- ÖĞRETMENLER BÖLÜMÜ --- */
+                const teacherTitle = document.createElement("h2");
+                teacherTitle.innerHTML = "🎓 Akademik Kadro";
+                teacherTitle.style.cssText = "color:white; margin: 20px 0 15px 2%; border-bottom:1px solid rgba(255,255,255,0.3); display:inline-block; padding-bottom:5px;";
+                displayArea.appendChild(teacherTitle);
 
+                const teacherGrid = document.createElement("div");
+                teacherGrid.className = "results-grid"; // İçeride tekrar Grid oluşturuyoruz
+                teacherGrid.style.width = "100%"; // Tam genişlik
+                teacherGrid.style.margin = "0";   // Dış boşluğu sıfırla
 
-        /* --- ÖĞRENCİLER BÖLÜMÜ --- */
-        const studentTitle = document.createElement("h2");
-        studentTitle.innerHTML = "🎒 Öğrenciler";
-        studentTitle.style.cssText = "color:white; margin: 40px 0 15px 2%; border-bottom:1px solid rgba(255,255,255,0.3); display:inline-block; padding-bottom:5px;";
-        displayArea.appendChild(studentTitle);
-
-        const studentGrid = document.createElement("div");
-        studentGrid.className = "results-grid";
-        studentGrid.style.width = "100%";
-        studentGrid.style.margin = "0";
-
-        students.forEach((user, i) => {
-            const card = createCard(user, i, "student");
-            studentGrid.appendChild(card);
-        });
-        displayArea.appendChild(studentGrid);
+                teachers.forEach((user, i) => {
+                    const card = createCard(user, i, "teacher");
+                    teacherGrid.appendChild(card);
+                });
+                displayArea.appendChild(teacherGrid);
 
 
-    } catch (e) {
-        console.error(e);
-        displayArea.innerHTML = `<p style="color:#ffcccc; text-align:center;">Veri çekilemedi.</p>`;
-    }
-}
+                /* --- ÖĞRENCİLER BÖLÜMÜ --- */
+                const studentTitle = document.createElement("h2");
+                studentTitle.innerHTML = "🎒 Öğrenciler";
+                studentTitle.style.cssText = "color:white; margin: 40px 0 15px 2%; border-bottom:1px solid rgba(255,255,255,0.3); display:inline-block; padding-bottom:5px;";
+                displayArea.appendChild(studentTitle);
 
-// Kart Oluşturucu Yardımcı Fonksiyon (Kod tekrarını önlemek için)
-function createCard(user, index, type) {
-    const card = document.createElement("div");
-    card.className = "data-card";
-    card.style.animationDelay = index * 0.05 + "s";
-    
-    // Öğretmen ve Öğrenci için farklı ikon/renk
-    let icon = type === "teacher" ? "👨‍🏫" : "🧑‍🎓";
-    let roleName = type === "teacher" ? "Öğretim Üyesi" : "Öğrenci";
-    
-    card.innerHTML = `
+                const studentGrid = document.createElement("div");
+                studentGrid.className = "results-grid";
+                studentGrid.style.width = "100%";
+                studentGrid.style.margin = "0";
+
+                students.forEach((user, i) => {
+                    const card = createCard(user, i, "student");
+                    studentGrid.appendChild(card);
+                });
+                displayArea.appendChild(studentGrid);
+
+
+            } catch (e) {
+                console.error(e);
+                displayArea.innerHTML = `<p style="color:#ffcccc; text-align:center;">Veri çekilemedi.</p>`;
+            }
+        }
+
+        // Kart Oluşturucu Yardımcı Fonksiyon (Kod tekrarını önlemek için)
+        function createCard(user, index, type) {
+            const card = document.createElement("div");
+            card.className = "data-card";
+            card.style.animationDelay = index * 0.05 + "s";
+
+            // Öğretmen ve Öğrenci için farklı ikon/renk
+            let icon = type === "teacher" ? "👨‍🏫" : "🧑‍🎓";
+            let roleName = type === "teacher" ? "Öğretim Üyesi" : "Öğrenci";
+
+            card.innerHTML = `
         <div class="card-header">
             <span class="card-title">${icon} ${user.FullName}</span>
         </div>
@@ -421,57 +710,86 @@ function createCard(user, index, type) {
             ${roleName} (ID: ${user.UserID})
         </div>
     `;
-    return card;
-}
+            return card;
+        }
 
-        /* 2. 🚀 PROJELERİ LİSTELE (GÜNCELLENMİŞ) */
-async function loadProjects() {
-    clearDisplay();
-    try {
-        const res = await fetch(`${API_URL}/projects`);
-        const data = await res.json();
+        /* 2. 🚀 PROJELERİ LİSTELE (DÜZELTİLMİŞ HALİ) */
+        async function loadProjects() {
+            clearDisplay();
+            try {
+                const res = await fetch(`${API_URL}/projects`);
+                const data = await res.json();
 
-        allProjects = data; // 🔥 YENİ: Veriyi global değişkene kopyaladık!
+                allProjects = data; // 🔥 Global değişkene kopyala
 
-        if (data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Henüz proje yok.</p>";
+                // --- KONSOL KONTROLÜ (Hata varsa F12'de görelim) ---
+                console.log("Projeler Yüklendi:", data);
+                if (data.length > 0) {
+                    console.log("İlk Proje Sahibi ID:", data[0].CreatedBy);
+                    console.log("Giriş Yapan ID:", currentUser ? currentUser.UserID : "Giriş Yok");
+                }
+                // ---------------------------------------------------
 
-        data.forEach((proj, i) => {
-            // Statüye göre renk ayarı
-            let statusColor = "#ccc";
-            let statusText = proj.Status;
-            if(proj.Status === 'approved') { statusColor = "#2ecc71"; statusText = "Onaylandı"; }
-            if(proj.Status === 'development') { statusColor = "#f1c40f"; statusText = "Geliştiriliyor"; }
-            if(proj.Status === 'proposal') { statusColor = "#3498db"; statusText = "Öneri"; }
-            if(proj.Status === 'submitted') { statusColor = "#9b59b6"; statusText = "Teslim Edildi"; }
+                if (data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Henüz proje yok.</p>";
 
-            const card = document.createElement("div");
-            card.className = "data-card";
-            card.style.borderLeft = `5px solid ${statusColor}`; 
-            card.style.animationDelay = i * 0.05 + "s";
-            
-            /* Aşağıdaki kısımda artık proj.CourseName kullanıyoruz.
-               Eğer veri gelmezse 'Belirtilmemiş' yazar, böylece undefined hatası kalkar.
-            */
-           const safeSummary = (proj.Summary || '').replace(/"/g, '&quot;'); // Tırnak hatasını önlemek için
-        const safeTitle = (proj.Title || '').replace(/"/g, '&quot;');
-        
-           let adminActions = "";
-            if (currentUser && currentUser.RoleID === 2) {
-                adminActions = `
+                // A. "YENİ PROJE EKLE" BUTONU (Sadece Öğrenciye)
+                if (currentUser && currentUser.RoleID === 3) {
+                    const addBtnContainer = document.createElement("div");
+                    addBtnContainer.style.gridColumn = "1 / -1";
+                    addBtnContainer.style.textAlign = "center";
+                    addBtnContainer.style.marginBottom = "20px";
+
+                    addBtnContainer.innerHTML = `
+                <button onclick="openAddProjectModal()" 
+                    style="background:#00b894; color:white; padding:12px 25px; font-size:1rem; border:none; border-radius:50px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+                    ➕ Yeni Proje Oluştur
+                </button>
+            `;
+                    displayArea.appendChild(addBtnContainer);
+                }
+
+                // B. PROJE KARTLARINI LİSTELEME
+                data.forEach((proj, i) => {
+                    // Statü Renkleri
+                    let statusColor = "#ccc";
+                    let statusText = proj.Status;
+                    if (proj.Status === 'approved') { statusColor = "#2ecc71"; statusText = "Onaylandı"; }
+                    if (proj.Status === 'development') { statusColor = "#f1c40f"; statusText = "Geliştiriliyor"; }
+                    if (proj.Status === 'proposal') { statusColor = "#3498db"; statusText = "Öneri"; }
+                    if (proj.Status === 'submitted') { statusColor = "#9b59b6"; statusText = "Teslim Edildi"; }
+
+                    const card = document.createElement("div");
+                    card.className = "data-card";
+                    card.style.borderLeft = `5px solid ${statusColor}`;
+                    card.style.animationDelay = i * 0.05 + "s";
+
+                    // 1. ÖĞRETMEN BUTONLARI (adminActions)
+                    let adminActions = "";
+                    if (currentUser && currentUser.RoleID === 2) {
+                        adminActions = `
                     <div style="margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2); display:flex; gap:10px; justify-content:flex-end;">
-                        <button onclick="openEditModal(${proj.ProjectID})" 
-                            style="background:#f1c40f; color:#333; padding:5px 10px; font-size:0.8rem; border:none; border-radius:5px; cursor:pointer;">
-                            ✏️ Detay & Düzenle
-                        </button>
+                        <button onclick="openEditModal(${proj.ProjectID})" style="background:#f1c40f; color:#333; padding:5px 10px; font-size:0.8rem; border:none; border-radius:5px; cursor:pointer;">✏️ Detay</button>
+                        <button onclick="deleteProject(${proj.ProjectID})" style="background:#e74c3c; color:white; padding:5px 10px; font-size:0.8rem; border:none; border-radius:5px; cursor:pointer;">🗑️ Sil</button>
+                    </div>
+                `;
+                    }
 
-                        <button onclick="deleteProject(${proj.ProjectID})" 
-                            style="background:#e74c3c; color:white; padding:5px 10px; font-size:0.8rem; border:none; border-radius:5px; cursor:pointer;">
-                            🗑️ Sil
+                    // 2. ÖĞRENCİ BUTONLARI (studentActions) - BURAYI DÜZELTTİK
+                    let studentActions = "";
+                    // Kullanıcı varsa VE Projenin sahibi ise
+                    if (currentUser && proj.CreatedBy && currentUser.UserID === proj.CreatedBy) {
+                        studentActions = `
+                    <div style="margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2); text-align:right;">
+                        <button onclick="openFileUploadModal(${proj.ProjectID})" 
+                            style="background:#6c5ce7; color:white; padding:5px 12px; font-size:0.8rem; border:none; border-radius:5px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+                            📂 Dosya Yükle
                         </button>
                     </div>
                 `;
-    }
-            card.innerHTML = `
+                    }
+
+                    // 3. KART İÇERİĞİNİ TEK SEFERDE BASIYORUZ
+                    card.innerHTML = `
                 <div class="card-header">
                     <span class="card-title">${proj.Title}</span>
                     <span style="background:${statusColor}; color:white; font-size:0.75rem; padding:3px 8px; border-radius:4px; font-weight:bold;">${statusText || proj.Status}</span>
@@ -482,39 +800,33 @@ async function loadProjects() {
                     <div>👤 <strong>Öğrenci:</strong> ${proj.StudentName || 'Bilinmiyor'}</div>
                 </div>
         
-        ${adminActions} `;
-            displayArea.appendChild(card);
-        });
-    } catch (e) { 
-        console.error(e);
-        showError(); 
-    }
+                ${adminActions}   ${studentActions} `;
 
-    function deleteProject(id) {
-    if(confirm("Bu projeyi silmek istediğinize emin misiniz? (Bu işlem admin yetkisi gerektirir)")) {
-        // Burada normalde fetch(API_URL + '/delete/' + id) yapılır.
-        alert("Backend delete endpoint'i henüz bağlanmadı ama yetkiniz var!");
-        // Görsel olarak silmek için: loadProjects();
-    }
-}
-}
+                    displayArea.appendChild(card);
+                });
+
+            } catch (e) {
+                console.error(e);
+                showError();
+            }
+        }
 
         /* 3. BÖLÜMLER (YENİ) */
         async function loadDepartments() {
             clearDisplay();
             try {
                 // Backend'de "/departments" endpointi olmalı
-                const res = await fetch(`${API_URL}/departments`); 
+                const res = await fetch(`${API_URL}/departments`);
                 const data = await res.json();
 
-                if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Bölüm bulunamadı.</p>";
+                if (data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Bölüm bulunamadı.</p>";
 
                 data.forEach((dept, i) => {
                     const card = document.createElement("div");
                     card.className = "data-card";
                     card.style.animationDelay = i * 0.05 + "s";
                     card.style.textAlign = "center"; // Ortala
-                    
+
                     // Rastgele bir ikon veya görsel efekt
                     card.innerHTML = `
                         <div style="font-size:3rem; margin-bottom:10px;">🏛️</div>
@@ -531,10 +843,10 @@ async function loadProjects() {
             clearDisplay();
             try {
                 // Backend'de "/reviews" endpointi olmalı
-                const res = await fetch(`${API_URL}/reviews`); 
+                const res = await fetch(`${API_URL}/reviews`);
                 const data = await res.json();
 
-                if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Henüz değerlendirme yok.</p>";
+                if (data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Henüz değerlendirme yok.</p>";
 
                 data.forEach((rev, i) => {
                     const card = document.createElement("div");
@@ -543,8 +855,8 @@ async function loadProjects() {
 
                     // Puana göre renk sınıfı belirle
                     let scoreClass = "low-score";
-                    if(rev.Score >= 85) scoreClass = "high-score";
-                    else if(rev.Score >= 70) scoreClass = "mid-score";
+                    if (rev.Score >= 85) scoreClass = "high-score";
+                    else if (rev.Score >= 70) scoreClass = "mid-score";
 
                     card.innerHTML = `
                         <div class="card-header">
@@ -562,22 +874,22 @@ async function loadProjects() {
         }
 
         /* -------------------------------------------------------------------------- */
-/* 5. DERSLERİ LİSTELE                                                        */
-/* -------------------------------------------------------------------------- */
-async function loadCourses() {
-    clearDisplay();
-    try {
-        const res = await fetch(`${API_URL}/courses`);
-        const data = await res.json();
+        /* 5. DERSLERİ LİSTELE                                                        */
+        /* -------------------------------------------------------------------------- */
+        async function loadCourses() {
+            clearDisplay();
+            try {
+                const res = await fetch(`${API_URL}/courses`);
+                const data = await res.json();
 
-        if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Ders bulunamadı.</p>";
+                if (data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Ders bulunamadı.</p>";
 
-        data.forEach((course, i) => {
-            const card = document.createElement("div");
-            card.className = "data-card";
-            card.style.animationDelay = i * 0.05 + "s";
-            
-            card.innerHTML = `
+                data.forEach((course, i) => {
+                    const card = document.createElement("div");
+                    card.className = "data-card";
+                    card.style.animationDelay = i * 0.05 + "s";
+
+                    card.innerHTML = `
                 <div class="card-header">
                     <span class="card-title">${course.CourseCode}</span>
                     <span style="font-size:0.8rem; background:rgba(0,0,0,0.2); padding:3px 8px; border-radius:4px;">
@@ -587,34 +899,34 @@ async function loadCourses() {
                 <p style="font-weight:600; font-size:1.1rem; margin-bottom:5px;">${course.CourseName}</p>
                 <p style="font-size:0.8rem; opacity:0.7;">Bağlı Bölüm ID: ${course.DepartmentID}</p>
             `;
-            displayArea.appendChild(card);
-        });
-    } catch (e) { showError(); }
-}
+                    displayArea.appendChild(card);
+                });
+            } catch (e) { showError(); }
+        }
 
-/* -------------------------------------------------------------------------- */
-/* 6. DOSYALARI LİSTELE (Teslim Edilenler)                                    */
-/* -------------------------------------------------------------------------- */
-async function loadFiles() {
-    clearDisplay();
-    try {
-        const res = await fetch(`${API_URL}/files`);
-        const data = await res.json();
+        /* -------------------------------------------------------------------------- */
+        /* 6. DOSYALARI LİSTELE (Teslim Edilenler)                                    */
+        /* -------------------------------------------------------------------------- */
+        async function loadFiles() {
+            clearDisplay();
+            try {
+                const res = await fetch(`${API_URL}/files`);
+                const data = await res.json();
 
-        if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Dosya bulunamadı.</p>";
+                if (data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Dosya bulunamadı.</p>";
 
-        data.forEach((file, i) => {
-            const card = document.createElement("div");
-            card.className = "data-card";
-            card.style.animationDelay = i * 0.05 + "s";
+                data.forEach((file, i) => {
+                    const card = document.createElement("div");
+                    card.className = "data-card";
+                    card.style.animationDelay = i * 0.05 + "s";
 
-            // Dosya uzantısına göre ikon seçimi (Basit mantık)
-            let icon = "📄";
-            if(file.FileName.includes(".pdf")) icon = "📕";
-            if(file.FileName.includes(".zip")) icon = "📦";
-            if(file.FileName.includes(".docx")) icon = "📝";
+                    // Dosya uzantısına göre ikon seçimi (Basit mantık)
+                    let icon = "📄";
+                    if (file.FileName.includes(".pdf")) icon = "📕";
+                    if (file.FileName.includes(".zip")) icon = "📦";
+                    if (file.FileName.includes(".docx")) icon = "📝";
 
-            card.innerHTML = `
+                    card.innerHTML = `
                 <div class="card-header">
                     <span class="card-title" style="font-size:1rem;">${file.ProjectTitle}</span>
                     <span style="font-size:0.8rem; opacity:0.8;">v${file.Version}</span>
@@ -632,33 +944,33 @@ async function loadFiles() {
                     Yükleyen: <strong>${file.UploaderName}</strong>
                 </div>
             `;
-            displayArea.appendChild(card);
-        });
-    } catch (e) { showError(); }
-}
+                    displayArea.appendChild(card);
+                });
+            } catch (e) { showError(); }
+        }
 
-/* -------------------------------------------------------------------------- */
-/* 7. DANIŞMAN GÖRÜŞLERİNİ LİSTELE                                            */
-/* -------------------------------------------------------------------------- */
-async function loadSupervisors() {
-    clearDisplay();
-    try {
-        const res = await fetch(`${API_URL}/supervisors`);
-        const data = await res.json();
+        /* -------------------------------------------------------------------------- */
+        /* 7. DANIŞMAN GÖRÜŞLERİNİ LİSTELE                                            */
+        /* -------------------------------------------------------------------------- */
+        async function loadSupervisors() {
+            clearDisplay();
+            try {
+                const res = await fetch(`${API_URL}/supervisors`);
+                const data = await res.json();
 
-        if(data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Görüş bulunamadı.</p>";
+                if (data.length === 0) displayArea.innerHTML = "<p style='color:white; text-align:center;'>Görüş bulunamadı.</p>";
 
-        data.forEach((sup, i) => {
-            const card = document.createElement("div");
-            card.className = "data-card";
-            card.style.animationDelay = i * 0.05 + "s";
+                data.forEach((sup, i) => {
+                    const card = document.createElement("div");
+                    card.className = "data-card";
+                    card.style.animationDelay = i * 0.05 + "s";
 
-            // Onay Durumu (Accepted = 1 ise Yeşil Tik, 0 ise Kırmızı Çarpı)
-            // SQL'de Accepted BIT olduğu için true/false veya 1/0 gelebilir.
-            let statusIcon = sup.Accepted ? "✅ Onaylandı" : "❌ Revize/Red";
-            let statusStyle = sup.Accepted ? "color:#2ecc71;" : "color:#e74c3c;";
+                    // Onay Durumu (Accepted = 1 ise Yeşil Tik, 0 ise Kırmızı Çarpı)
+                    // SQL'de Accepted BIT olduğu için true/false veya 1/0 gelebilir.
+                    let statusIcon = sup.Accepted ? "✅ Onaylandı" : "❌ Revize/Red";
+                    let statusStyle = sup.Accepted ? "color:#2ecc71;" : "color:#e74c3c;";
 
-            card.innerHTML = `
+                    card.innerHTML = `
                 <div class="card-header">
                     <span class="card-title" style="font-size:1rem;">${sup.ProjectTitle}</span>
                 </div>
@@ -672,90 +984,90 @@ async function loadSupervisors() {
                     <div style="font-weight:bold; ${statusStyle}">${statusIcon}</div>
                 </div>
             `;
-            displayArea.appendChild(card);
-        });
-    } catch (e) { showError(); }
-}
-
-/* -------------------------------------------------------------------------- */
-/* A. MODALI AÇMA VE VERİ DOLDURMA                                            */
-/* -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- */
-/* A. MODALI AÇMA (GÜNCELLENMİŞ - ROBUST YÖNTEM)                              */
-/* -------------------------------------------------------------------------- */
-async function openEditModal(projID) {
-    currentEditingProjectId = projID;
-    
-    // 1. Veriyi hafızadan bul
-    const project = allProjects.find(p => p.ProjectID === projID);
-    
-    if (!project) {
-        alert("Proje detayları bulunamadı!");
-        return;
-    }
-
-    const modal = document.getElementById("editModal");
-    const btnSave = document.getElementById("btnSaveProject");
-    const permText = document.getElementById("permissionText");
-
-    // 2. Bilgileri Doldur
-    document.getElementById("modalTitle").innerText = `Düzenle: ${project.Title}`;
-    document.getElementById("editStatus").value = project.Status;
-    document.getElementById("editSummary").value = project.Summary || "";
-    document.getElementById("modalCourse").innerText = project.CourseName || "Belirtilmemiş";
-    document.getElementById("modalStudent").innerText = project.StudentName || "Bilinmiyor";
-
-    // Modalı Göster
-    modal.style.display = "flex";
-
-    // 3. Dosyaları Çek
-    loadProjectFiles(projID);
-
-    // 4. YETKİ KONTROLÜ (Danışman mı?)
-    btnSave.style.display = "none";
-    btnSave.disabled = true;
-    permText.style.display = "none";
-
-    try {
-        const res = await fetch(`${API_URL}/project-supervisor/${projID}`);
-        const supervisors = await res.json();
-        
-        // Giriş yapan hoca, bu projenin danışmanı mı?
-        const isSupervisor = supervisors.some(s => s.UserID === currentUser.UserID);
-
-        if (isSupervisor) {
-            btnSave.style.display = "block";
-            btnSave.disabled = false;
-            document.getElementById("editStatus").disabled = false;
-            document.getElementById("editSummary").disabled = false;
-        } else {
-            permText.style.display = "block";
-            permText.innerText = "🔒 Sadece atanan danışman düzenleyebilir.";
-            document.getElementById("editStatus").disabled = true;
-            document.getElementById("editSummary").disabled = true;
-        }
-    } catch (e) {
-        console.error("Yetki kontrolü hatası:", e);
-    }
-}
-
-/* B. DOSYALARI LİSTELEME */
-async function loadProjectFiles(projID) {
-    const list = document.getElementById("modalFilesList");
-    list.innerHTML = "⏳ Dosyalar getiriliyor...";
-
-    try {
-        const res = await fetch(`${API_URL}/project-files/${projID}`);
-        const files = await res.json();
-
-        if (files.length === 0) {
-            list.innerHTML = "<span style='opacity:0.5'>Dosya yüklenmemiş.</span>";
-            return;
+                    displayArea.appendChild(card);
+                });
+            } catch (e) { showError(); }
         }
 
-        list.innerHTML = "";
-        files.forEach(f => {
-            list.innerHTML += `
+        /* -------------------------------------------------------------------------- */
+        /* A. MODALI AÇMA VE VERİ DOLDURMA                                            */
+        /* -------------------------------------------------------------------------- */
+        /* -------------------------------------------------------------------------- */
+        /* A. MODALI AÇMA (GÜNCELLENMİŞ - ROBUST YÖNTEM)                              */
+        /* -------------------------------------------------------------------------- */
+        async function openEditModal(projID) {
+            currentEditingProjectId = projID;
+
+            // 1. Veriyi hafızadan bul
+            const project = allProjects.find(p => p.ProjectID === projID);
+
+            if (!project) {
+                alert("Proje detayları bulunamadı!");
+                return;
+            }
+
+            const modal = document.getElementById("editModal");
+            const btnSave = document.getElementById("btnSaveProject");
+            const permText = document.getElementById("permissionText");
+
+            // 2. Bilgileri Doldur
+            document.getElementById("modalTitle").innerText = `Düzenle: ${project.Title}`;
+            document.getElementById("editStatus").value = project.Status;
+            document.getElementById("editSummary").value = project.Summary || "";
+            document.getElementById("modalCourse").innerText = project.CourseName || "Belirtilmemiş";
+            document.getElementById("modalStudent").innerText = project.StudentName || "Bilinmiyor";
+
+            // Modalı Göster
+            modal.style.display = "flex";
+
+            // 3. Dosyaları Çek
+            loadProjectFiles(projID);
+
+            // 4. YETKİ KONTROLÜ (Danışman mı?)
+            btnSave.style.display = "none";
+            btnSave.disabled = true;
+            permText.style.display = "none";
+
+            try {
+                const res = await fetch(`${API_URL}/project-supervisor/${projID}`);
+                const supervisors = await res.json();
+
+                // Giriş yapan hoca, bu projenin danışmanı mı?
+                const isSupervisor = supervisors.some(s => s.UserID === currentUser.UserID);
+
+                if (isSupervisor) {
+                    btnSave.style.display = "block";
+                    btnSave.disabled = false;
+                    document.getElementById("editStatus").disabled = false;
+                    document.getElementById("editSummary").disabled = false;
+                } else {
+                    permText.style.display = "block";
+                    permText.innerText = "🔒 Sadece atanan danışman düzenleyebilir.";
+                    document.getElementById("editStatus").disabled = true;
+                    document.getElementById("editSummary").disabled = true;
+                }
+            } catch (e) {
+                console.error("Yetki kontrolü hatası:", e);
+            }
+        }
+
+        /* B. DOSYALARI LİSTELEME */
+        async function loadProjectFiles(projID) {
+            const list = document.getElementById("modalFilesList");
+            list.innerHTML = "⏳ Dosyalar getiriliyor...";
+
+            try {
+                const res = await fetch(`${API_URL}/project-files/${projID}`);
+                const files = await res.json();
+
+                if (files.length === 0) {
+                    list.innerHTML = "<span style='opacity:0.5'>Dosya yüklenmemiş.</span>";
+                    return;
+                }
+
+                list.innerHTML = "";
+                files.forEach(f => {
+                    list.innerHTML += `
                 <div class="file-item">
                     <span>📄</span>
                     <div>
@@ -764,64 +1076,188 @@ async function loadProjectFiles(projID) {
                     </div>
                 </div>
             `;
-        });
-    } catch (e) {
-        list.innerHTML = "Hata oluştu.";
-    }
-}
-
-/* C. KAYDETME İŞLEMİ */
-async function saveProjectChanges() {
-    const status = document.getElementById("editStatus").value;
-    const summary = document.getElementById("editSummary").value;
-
-    if(!confirm("Değişiklikleri kaydetmek istiyor musunuz?")) return;
-
-    try {
-        const res = await fetch(`${API_URL}/projects/${currentEditingProjectId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status, summary })
-        });
-        const data = await res.json();
-        
-        if(data.success) {
-            alert("✅ Başarıyla güncellendi!");
-            closeModal();
-            loadProjects(); // Listeyi yenile
-        } else {
-            alert("Hata: " + data.message);
+                });
+            } catch (e) {
+                list.innerHTML = "Hata oluştu.";
+            }
         }
-    } catch (e) {
-        alert("Sunucu hatası.");
-    }
-}
 
-/* D. SİLME İŞLEMİ (GÜNCELLENMİŞ) */
-async function deleteProject(id) {
-    if(!confirm("⚠️ DİKKAT: Bu projeyi ve tüm dosyalarını kalıcı olarak silmek istediğinize emin misiniz?")) return;
+        /* C. KAYDETME İŞLEMİ */
+        async function saveProjectChanges() {
+            const status = document.getElementById("editStatus").value;
+            const summary = document.getElementById("editSummary").value;
 
-    try {
-        const res = await fetch(`${API_URL}/projects/${id}`, { method: "DELETE" });
-        const data = await res.json();
+            if (!confirm("Değişiklikleri kaydetmek istiyor musunuz?")) return;
 
-        if(data.success) {
-            alert("Proje silindi.");
-            loadProjects();
-        } else {
-            alert("Silinemedi: " + data.message);
+            try {
+                const res = await fetch(`${API_URL}/projects/${currentEditingProjectId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status, summary })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert("✅ Başarıyla güncellendi!");
+                    closeModal();
+                    loadProjects(); // Listeyi yenile
+                } else {
+                    alert("Hata: " + data.message);
+                }
+            } catch (e) {
+                alert("Sunucu hatası.");
+            }
         }
-    } catch (e) {
-        alert("Hata oluştu.");
-    }
-}
 
-function closeModal() {
-    document.getElementById("editModal").style.display = "none";
-}
+        /* D. SİLME İŞLEMİ (GÜNCELLENMİŞ) */
+        async function deleteProject(id) {
+            if (!confirm("⚠️ DİKKAT: Bu projeyi ve tüm dosyalarını kalıcı olarak silmek istediğinize emin misiniz?")) return;
+
+            try {
+                const res = await fetch(`${API_URL}/projects/${id}`, { method: "DELETE" });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert("Proje silindi.");
+                    loadProjects();
+                } else {
+                    alert("Silinemedi: " + data.message);
+                }
+            } catch (e) {
+                alert("Hata oluştu.");
+            }
+        }
+
+        // 1. Ekleme Modalını Aç
+        async function openAddProjectModal() {
+            const modal = document.getElementById("addProjectModal");
+            const courseSelect = document.getElementById("newProjCourse");
+
+            // Önce Modal'ı göster
+            modal.style.display = "flex";
+
+            // Select kutusunu temizle
+            courseSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+
+            // Veritabanından Dersleri Çek ve Select'e Doldur
+            try {
+                const res = await fetch(`${API_URL}/courses`);
+                const courses = await res.json();
+
+                courseSelect.innerHTML = '<option value="">Ders Seçiniz...</option>';
+                courses.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.CourseID;
+                    opt.innerText = `${c.CourseCode} - ${c.CourseName}`;
+                    courseSelect.appendChild(opt);
+                });
+            } catch (e) {
+                alert("Ders listesi yüklenirken hata oluştu.");
+                closeAddModal();
+            }
+        }
+
+        // 2. Modalı Kapat
+        function closeAddModal() {
+            document.getElementById("addProjectModal").style.display = "none";
+        }
+
+        // 3. Projeyi Kaydet
+        async function saveNewProject() {
+            const title = document.getElementById("newProjTitle").value;
+            const summary = document.getElementById("newProjSummary").value;
+            const courseId = document.getElementById("newProjCourse").value;
+
+            if (!title || !courseId) {
+                alert("Lütfen proje başlığı ve ders seçimini yapınız!");
+                return;
+            }
+
+            const payload = {
+                Title: title,
+                Summary: summary,
+                CourseID: parseInt(courseId),
+                CreatedBy: currentUser.UserID // <-- Giriş yapan kullanıcının ID'si burada alınıyor
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/projects`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    alert("✅ Projeniz başarıyla oluşturuldu!");
+                    closeAddModal();
+                    loadProjects(); // Listeyi yenile ki yeni proje görünsün
+                } else {
+                    alert("Hata: " + result.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Sunucu hatası oluştu.");
+            }
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
 
         function showError() {
             displayArea.innerHTML = `<p style="color:#ffcccc; text-align:center; width:100%;">Veri çekilemedi. Backend sunucusunun (localhost:3000) açık olduğundan ve endpointlerin (users, projects, departments, reviews) tanımlı olduğundan emin olun.</p>`;
+        }
+
+        /* index.html - Script sonuna ekle */
+
+        let targetProjectID = null; // Dosyanın hangi projeye yükleneceğini tutar
+
+        function openFileUploadModal(projID) {
+            targetProjectID = projID;
+            document.getElementById("fileUploadModal").style.display = "flex";
+        }
+
+        function closeFileModal() {
+            document.getElementById("fileUploadModal").style.display = "none";
+            targetProjectID = null;
+        }
+
+        async function uploadFileAction() {
+            const fileInput = document.getElementById("inpFileSelect");
+
+            if (fileInput.files.length === 0) {
+                alert("Lütfen bir dosya seçiniz.");
+                return;
+            }
+
+            const fileName = fileInput.files[0].name; // Dosyanın ismini alıyoruz (örn: odeve.pdf)
+
+            const payload = {
+                ProjectID: targetProjectID,
+                FileName: fileName,
+                UploadedBy: currentUser.UserID
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/files`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    alert("✅ Dosya yüklendi!");
+                    closeFileModal();
+                    // İstersen burada loadFiles() çağırıp dosyalar sekmesine yönlendirebilirsin
+                } else {
+                    alert("Hata: " + result.message);
+                }
+            } catch (e) {
+                alert("Sunucu hatası.");
+            }
         }
 
         /* Partikül Animasyonu */
@@ -838,4 +1274,5 @@ function closeModal() {
 
     </script>
 </body>
+
 </html>
