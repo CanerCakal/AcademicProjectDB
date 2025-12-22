@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 // db.js dosyasından sql nesnesini ve ayarları çekiyoruz
-const { sql, config } = require('./db'); 
+const { sql, config } = require('./db');
 
 const app = express();
 app.use(cors());
@@ -45,10 +45,10 @@ app.post('/login', async (req, res) => {
 
         if (result.recordset.length > 0) {
             const user = result.recordset[0];
-            
+
             // Şifreyi güvenlik gereği frontend'e yollamıyoruz
-            delete user.PasswordHash; 
-            
+            delete user.PasswordHash;
+
             res.json({ success: true, user: user });
         } else {
             res.status(401).json({ success: false, message: "Hatalı e-posta veya şifre!" });
@@ -61,19 +61,22 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// ... Buradan sonra diğer app.get kodların (projects, users vs.) gelebilir ...
-
 // Sunucuyu dinlemeye başla
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Sunucu http://localhost:${PORT} adresinde çalışıyor.`);
 });
 
-// 1. MEVCUT KULLANICI LİSTELEME (Burası zaten vardı)
+// 1. MEVCUT KULLANICI LİSTELEME
 app.get('/users', async (req, res) => {
     try {
         const pool = await sql.connect(config);
-        const result = await pool.request().query('SELECT * FROM Users');
+        // SORGUSU GÜNCELLENDİ: Departments tablosu ile LEFT JOIN yapıldı
+        const result = await pool.request().query(`
+            SELECT u.*, d.DepartmentName 
+            FROM Users u 
+            LEFT JOIN Departments d ON u.DepartmentID = d.DepartmentID
+        `);
         res.json(result.recordset);
     } catch (err) {
         console.log(err);
@@ -94,14 +97,15 @@ app.get('/projects', async (req, res) => {
                 p.Summary,
                 p.Status,
                 p.CourseID,
-                c.CourseName,      -- Dersin Adı artık gelecek
-                c.CourseCode,      -- Dersin Kodu (CSE305 vb.)
-                u.FullName AS StudentName  -- Öğrencinin Adı
+                p.CreatedBy,       -- YENİ EKLENEN: Projenin sahibi kim? (Buton kontrolü için şart)
+                c.CourseName,
+                c.CourseCode,
+                u.FullName AS StudentName
             FROM Projects p
             LEFT JOIN Courses c ON p.CourseID = c.CourseID
             LEFT JOIN Users u ON p.CreatedBy = u.UserID
         `;
-        
+
         const result = await sql.query(query);
         res.json(result.recordset);
     } catch (err) {
@@ -117,13 +121,13 @@ app.get('/departments', async (req, res) => {
         const result = await pool.request().query('SELECT * FROM Departments');
         res.json(result.recordset);
     } catch (err) {
-        console.log("Projeler çekilirken hata oluştu!",err);
+        console.log("Projeler çekilirken hata oluştu!", err);
         res.status(500).send("Sunucu hatası: " + err.message);
     }
 });
 
 // 4. Değerlendirme Kriterlerini Listeleme
-app.get('/reviews', async (req,res) => {
+app.get('/reviews', async (req, res) => {
     try {
         const pool = await sql.connect(config);
         const result = await pool.request().query(`
@@ -141,7 +145,7 @@ app.get('/reviews', async (req,res) => {
         `);
         res.json(result.recordset);
     } catch (err) {
-        console.log("Değerlendirme çekilirken hata oluştu!",err);
+        console.log("Değerlendirme çekilirken hata oluştu!", err);
         res.status(500).send("Sunucu hatası: " + err.message);
     }
 });
@@ -209,22 +213,26 @@ app.get('/supervisors', async (req, res) => {
 /* -------------------------------------------------------------------------- */
 /* 8. PROJE GÜNCELLEME (Status ve Summary)                                    */
 /* -------------------------------------------------------------------------- */
+// 8. PROJE GÜNCELLEME (Title, Status ve Summary)
 app.put('/projects/:id', async (req, res) => {
     const { id } = req.params;
-    const { status, summary } = req.body; // Frontend'den gelecek veriler
+    // Frontend'den Title da gelebilir artık
+    const { status, summary, title } = req.body;
 
     try {
         const request = new sql.Request();
         request.input('id', sql.Int, id);
         request.input('status', sql.NVarChar, status);
         request.input('summary', sql.NVarChar, summary);
+        request.input('title', sql.NVarChar, title); // Yeni input
 
+        // SQL Sorgusuna Title'ı da ekledik
         await request.query(`
             UPDATE Projects 
-            SET Status = @status, Summary = @summary, UpdatedAt = GETDATE()
+            SET Status = @status, Summary = @summary, Title = ISNULL(@title, Title), UpdatedAt = GETDATE()
             WHERE ProjectID = @id
         `);
-        
+
         res.json({ success: true, message: "Proje güncellendi." });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
@@ -246,7 +254,7 @@ app.delete('/projects/:id', async (req, res) => {
         await request.query('DELETE FROM ProjectMembers WHERE ProjectID = @id');
         await request.query('DELETE FROM ProjectSupervisors WHERE ProjectID = @id');
         await request.query('DELETE FROM ProjectReviews WHERE ProjectID = @id');
-        
+
         // En son ana projeyi siliyoruz
         await request.query('DELETE FROM Projects WHERE ProjectID = @id');
 
@@ -290,19 +298,22 @@ app.get('/project-supervisor/:id', async (req, res) => {
 /* -------------------------------------------------------------------------- */
 /* ADMIN GÜNCELLEME İŞLEMLERİ (PUT)                                           */
 /* -------------------------------------------------------------------------- */
-
 // 1. KULLANICI GÜNCELLEME
 app.put('/users/:id', async (req, res) => {
     const { id } = req.params;
-    const { FullName, Email, RoleID } = req.body;
+    // DEĞİŞİKLİK BURADA: DepartmentID eklendi
+    const { FullName, Email, RoleID, DepartmentID } = req.body;
     try {
         const request = new sql.Request();
         request.input('id', sql.Int, id);
         request.input('name', sql.NVarChar, FullName);
         request.input('email', sql.NVarChar, Email);
         request.input('role', sql.Int, RoleID);
+        // YENİ INPUT: Eğer DepartmentID boş gelirse (örn: Admin için) NULL kaydet
+        request.input('deptId', sql.Int, DepartmentID || null);
 
-        await request.query(`UPDATE Users SET FullName=@name, Email=@email, RoleID=@role WHERE UserID=@id`);
+        // SORGUSU GÜNCELLENDİ
+        await request.query(`UPDATE Users SET FullName=@name, Email=@email, RoleID=@role, DepartmentID=@deptId WHERE UserID=@id`);
         res.json({ success: true });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
@@ -321,36 +332,85 @@ app.put('/departments/:id', async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// 3. DERS GÜNCELLEME
+/* server.js dosyası */
+
+// 3. DERS GÜNCELLEME (GÜVENLİ YENİ HALİ)
 app.put('/courses/:id', async (req, res) => {
     const { id } = req.params;
-    const { CourseName, CourseCode, Term } = req.body;
+    // Frontend'den gelen actionUserId bilgisini burada karşılıyoruz
+    const { CourseName, CourseCode, Term, actionUserId } = req.body;
+
     try {
         const request = new sql.Request();
-        request.input('id', sql.Int, id);
-        request.input('name', sql.NVarChar, CourseName);
-        request.input('code', sql.NVarChar, CourseCode);
-        request.input('term', sql.NVarChar, Term);
 
-        await request.query(`UPDATE Courses SET CourseName=@name, CourseCode=@code, Term=@term WHERE CourseID=@id`);
-        res.json({ success: true });
-    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+        // 1. İşlemi yapan hocanın/adminin bilgilerini çekiyoruz
+        request.input('uid', sql.Int, actionUserId);
+        const userCheck = await request.query(`SELECT RoleID, DepartmentID FROM Users WHERE UserID = @uid`);
+
+        if (userCheck.recordset.length === 0) {
+            return res.status(404).json({ success: false, message: "Kullanıcı bulunamadı." });
+        }
+
+        const user = userCheck.recordset[0];
+
+        // 2. Eğer ADMIN (RoleID=1) değilse, yetki kontrolü yapıyoruz
+        if (user.RoleID !== 1) {
+
+            // Güncellenmek istenen dersin Bölüm ID'sini buluyoruz
+            // Not: Yeni bir request nesnesi oluşturmak daha güvenlidir
+            const requestCourse = new sql.Request();
+            requestCourse.input('cid', sql.Int, id);
+            const courseCheck = await requestCourse.query(`SELECT DepartmentID FROM Courses WHERE CourseID = @cid`);
+
+            if (courseCheck.recordset.length === 0) {
+                return res.status(404).json({ success: false, message: "Ders bulunamadı." });
+            }
+
+            const course = courseCheck.recordset[0];
+
+            // KONTROL: Hocanın bölümü ile Dersin bölümü aynı mı?
+            if (user.DepartmentID !== course.DepartmentID) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Yetkisiz İşlem! Sadece kendi bölümünüzdeki dersleri düzenleyebilirsiniz."
+                });
+            }
+        }
+
+        // 3. Her şey uygunsa güncellemeyi yapıyoruz
+        const updateRequest = new sql.Request();
+        updateRequest.input('id', sql.Int, id);
+        updateRequest.input('name', sql.NVarChar, CourseName);
+        updateRequest.input('code', sql.NVarChar, CourseCode);
+        updateRequest.input('term', sql.NVarChar, Term);
+
+        await updateRequest.query(`UPDATE Courses SET CourseName=@name, CourseCode=@code, Term=@term WHERE CourseID=@id`);
+
+        res.json({ success: true, message: "Ders başarıyla güncellendi." });
+
+    } catch (err) {
+        console.error("Hata:", err); // Hata ayıklama için konsola yazdır
+        res.status(500).json({ success: false, message: err.message });
+    }
 });
 /* -------------------------------------------------------------------------- */
 /* ADMIN EKLEME İŞLEMLERİ (POST)                                              */
 /* -------------------------------------------------------------------------- */
-
 // 1. YENİ KULLANICI EKLE
 app.post('/users', async (req, res) => {
-    const { FullName, Email, RoleID, Password } = req.body;
+    // DEĞİŞİKLİK BURADA: DepartmentID parametresi eklendi
+    const { FullName, Email, RoleID, Password, DepartmentID } = req.body;
     try {
         const request = new sql.Request();
         request.input('name', sql.NVarChar, FullName);
         request.input('email', sql.NVarChar, Email);
-        request.input('pass', sql.NVarChar, Password || '1234'); // Şifre gelmezse varsayılan 1234 olsun
+        request.input('pass', sql.NVarChar, Password || '1234');
         request.input('role', sql.Int, RoleID);
+        // YENİ INPUT
+        request.input('deptId', sql.Int, DepartmentID || null);
 
-        await request.query(`INSERT INTO Users (FullName, Email, PasswordHash, RoleID) VALUES (@name, @email, @pass, @role)`);
+        // SORGU GÜNCELLENDİ: INSERT içine DepartmentID eklendi
+        await request.query(`INSERT INTO Users (FullName, Email, PasswordHash, RoleID, DepartmentID) VALUES (@name, @email, @pass, @role, @deptId)`);
         res.json({ success: true, message: "Kullanıcı oluşturuldu." });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
@@ -367,37 +427,181 @@ app.post('/departments', async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// 3. YENİ DERS EKLE
+// 3. YENİ DERS EKLE (Bölüm ve Hoca ID Destekli)
 app.post('/courses', async (req, res) => {
-    const { CourseName, CourseCode, Term } = req.body; // DepartmentID eklenebilir ama şimdilik basit tutalım
+    const { CourseName, CourseCode, Term, DepartmentID, InstructorID } = req.body;
+
     try {
         const request = new sql.Request();
         request.input('name', sql.NVarChar, CourseName);
         request.input('code', sql.NVarChar, CourseCode);
         request.input('term', sql.NVarChar, Term);
+        request.input('deptId', sql.Int, DepartmentID || null);
+        request.input('instId', sql.Int, InstructorID || null); // YENİ: Hoca ID
 
-        // Not: DepartmentID null olabilir veya arayüzden seçtirilebilir. Şimdilik NULL gidiyor.
-        await request.query(`INSERT INTO Courses (CourseName, CourseCode, Term) VALUES (@name, @code, @term)`);
-        res.json({ success: true, message: "Ders oluşturuldu." });
+        await request.query(`
+            INSERT INTO Courses (CourseName, CourseCode, Term, DepartmentID, InstructorID) 
+            VALUES (@name, @code, @term, @deptId, @instId)
+        `);
+
+        res.json({ success: true, message: "Ders oluşturuldu ve hoca atandı." });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// 4. YENİ PROJE EKLE (Admin manuel eklemek isterse)
+// 4. YENİ PROJE EKLE (OTOMATİK DANIŞMAN ATAMALI)
 app.post('/projects', async (req, res) => {
-    // Bu biraz kompleks çünkü CreatedBy ve CourseID zorunlu. 
-    // Admin panelinden bunları ID olarak girmemiz gerekecek.
-    const { Title, Summary } = req.body;
+    const { Title, Summary, CourseID, CreatedBy } = req.body;
+
+    // Transaction (İşlem Bütünlüğü) kullanarak hata olursa yarım kayıt oluşmasını engelliyoruz.
+    const transaction = new sql.Transaction();
+
+    try {
+        await transaction.begin();
+
+        // 1. Önce bu dersin hocası kim, onu bulalım
+        const requestCourse = new sql.Request(transaction);
+        requestCourse.input('courseId', sql.Int, CourseID);
+        const courseResult = await requestCourse.query("SELECT InstructorID FROM Courses WHERE CourseID = @courseId");
+
+        if (courseResult.recordset.length === 0 || !courseResult.recordset[0].InstructorID) {
+            // Eğer dersin hocası atanmamışsa işlem iptal
+            throw new Error("Seçilen dersin bir danışman hocası (InstructorID) tanımlanmamış! Önce Admin panelinden derse hoca atayın.");
+        }
+
+        const instructorId = courseResult.recordset[0].InstructorID;
+
+        // 2. Projeyi Kaydet (Ve oluşan yeni Proje ID'sini al)
+        const requestProj = new sql.Request(transaction);
+        requestProj.input('title', sql.NVarChar, Title);
+        requestProj.input('summary', sql.NVarChar, Summary);
+        requestProj.input('courseId', sql.Int, CourseID);
+        requestProj.input('studentId', sql.Int, CreatedBy);
+
+        // INSERT işlemi sonuna 'SELECT SCOPE_IDENTITY()' ekleyerek yeni ID'yi alıyoruz
+        const insertResult = await requestProj.query(`
+            INSERT INTO Projects (Title, Summary, CreatedBy, CourseID, Status) 
+            VALUES (@title, @summary, @studentId, @courseId, 'proposal');
+            SELECT SCOPE_IDENTITY() AS NewProjectID;
+        `);
+
+        const newProjectId = insertResult.recordset[0].NewProjectID;
+
+        // 3. Projeyi Otomatik Olarak Dersin Hocasına Ata (ProjectSupervisors tablosuna ekle)
+        const requestSup = new sql.Request(transaction);
+        requestSup.input('pId', sql.Int, newProjectId);
+        requestSup.input('uId', sql.Int, instructorId); // Dersin Hocası
+
+        await requestSup.query(`
+            INSERT INTO ProjectSupervisors (ProjectID, UserID, Accepted, FeedbackText)
+            VALUES (@pId, @uId, 0, 'Otomatik atandı. Onay bekleniyor.')
+        `);
+
+        // Hata yoksa işlemi onayla
+        await transaction.commit();
+
+        res.json({ success: true, message: "Proje oluşturuldu ve dersin danışmanına atandı." });
+
+    } catch (err) {
+        // Hata varsa yapılan her şeyi geri al (Rollback)
+        if (transaction._aborted === false) {
+            await transaction.rollback();
+        }
+        console.error("Proje ekleme hatası:", err);
+        res.status(500).json({ success: false, message: "İşlem başarısız: " + err.message });
+    }
+});
+
+/* -------------------------------------------------------------------------- */
+/* ADMIN SİLME İŞLEMLERİ (DELETE) - YENİ EKLENECEK KISIMLAR                   */
+/* -------------------------------------------------------------------------- */
+
+// 1. KULLANICI SİLME
+app.delete('/users/:id', async (req, res) => {
+    const { id } = req.params;
     try {
         const request = new sql.Request();
-        request.input('title', sql.NVarChar, Title);
-        request.input('summary', sql.NVarChar, Summary);
-        
-        // Admin eklediği için varsayılan değerler atayalım (Örn: Admin ID=1, Ders ID=1)
-        // İleride arayüzden seçtirmeli yapabiliriz.
-        await request.query(`INSERT INTO Projects (Title, Summary, CreatedBy, CourseID, Status) VALUES (@title, @summary, 1, 1, 'proposal')`);
-        
-        res.json({ success: true, message: "Proje taslağı oluşturuldu." });
-    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+        request.input('id', sql.Int, id);
+
+        // DİKKAT: Eğer bu kullanıcının projesi, yorumu vs. varsa SQL hata verir (Foreign Key).
+        // Önce bağlı verilerin temizlenmesi gerekir. Şimdilik direkt silmeyi deniyoruz.
+        await request.query('DELETE FROM Users WHERE UserID = @id');
+
+        res.json({ success: true, message: "Kullanıcı silindi." });
+    } catch (err) {
+        // SQL Hatası (Bağlı veri varsa) döner
+        res.status(500).json({ success: false, message: "Silinemedi! (Kullanıcıya bağlı proje veya veri olabilir): " + err.message });
+    }
+});
+
+// 2. BÖLÜM SİLME
+app.delete('/departments/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const request = new sql.Request();
+        request.input('id', sql.Int, id);
+
+        await request.query('DELETE FROM Departments WHERE DepartmentID = @id');
+
+        res.json({ success: true, message: "Bölüm silindi." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Silinemedi! (Bu bölüme bağlı dersler olabilir): " + err.message });
+    }
+});
+
+// 3. DERS SİLME
+app.delete('/courses/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const request = new sql.Request();
+        request.input('id', sql.Int, id);
+
+        await request.query('DELETE FROM Courses WHERE CourseID = @id');
+
+        res.json({ success: true, message: "Ders silindi." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Silinemedi! (Bu derse bağlı projeler olabilir): " + err.message });
+    }
+});
+
+// MÜSAİT ÖĞRETMENLERİ GETİR (Hicbir derse atanmamış olanlar)
+app.get('/available-instructors', async (req, res) => {
+    try {
+        const pool = await sql.connect(config);
+        const result = await pool.request().query(`
+            SELECT UserID, FullName 
+            FROM Users 
+            WHERE RoleID = 2 -- Sadece Öğretmenler
+            AND UserID NOT IN (SELECT DISTINCT InstructorID FROM Courses WHERE InstructorID IS NOT NULL) -- Dersi Olmayanlar
+        `);
+        res.json(result.recordset);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+// 12. YENİ DOSYA YÜKLEME (Simülasyon)
+app.post('/files', async (req, res) => {
+    const { ProjectID, FileName, UploadedBy } = req.body;
+
+    try {
+        const request = new sql.Request();
+        request.input('pid', sql.Int, ProjectID);
+        request.input('fname', sql.NVarChar, FileName);
+        request.input('uid', sql.Int, UploadedBy);
+
+        // Gerçek bir upload olmadığı için sanal bir yol oluşturuyoruz
+        const fakePath = `/uploads/projects/${ProjectID}/${FileName}`;
+        request.input('fpath', sql.NVarChar, fakePath);
+
+        await request.query(`
+            INSERT INTO ProjectDeliverables (ProjectID, FileName, FilePath, Version, UploadedBy) 
+            VALUES (@pid, @fname, @fpath, 1, @uid)
+        `);
+
+        res.json({ success: true, message: "Dosya başarıyla yüklendi." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
 });
 
 app.listen(3000, () => console.log("Server running on port 3000"));
